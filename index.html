@@ -1,9 +1,11 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
 
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>TP Dashboard</title>
 
 <style>
@@ -23,7 +25,7 @@ body{
   overflow:hidden;
 }
 
-/* ======================= */
+/* ========================= */
 
 .sidebar{
   width:320px;
@@ -38,17 +40,17 @@ body{
 }
 
 .sidebar-title{
-  font-size:24px;
+  font-size:28px;
   font-weight:bold;
 }
 
 .sidebar-sub{
+  margin-top:8px;
   color:#94a3b8;
-  margin-top:6px;
 }
 
 .po-item{
-  padding:22px;
+  padding:20px;
   border-bottom:1px solid #1e293b;
   cursor:pointer;
 }
@@ -63,8 +65,8 @@ body{
 }
 
 .po-lines{
+  margin-top:6px;
   color:#94a3b8;
-  margin-top:5px;
 }
 
 .status-dot{
@@ -72,15 +74,15 @@ body{
   height:12px;
   border-radius:50%;
   float:right;
-  margin-top:8px;
+  margin-top:6px;
 }
 
-/* ======================= */
+/* ========================= */
 
 .main{
   flex:1;
   overflow-y:auto;
-  padding:36px;
+  padding:30px;
 }
 
 .top-header{
@@ -91,23 +93,26 @@ body{
 }
 
 .page-title{
-  font-size:56px;
+  font-size:54px;
   font-weight:bold;
 }
 
 .page-sub{
-  color:#94a3b8;
   margin-top:8px;
+  color:#94a3b8;
 }
 
 .export-btn{
-  background:#0f172a;
+  background:#111827;
   border:1px solid #334155;
   color:white;
   padding:14px 22px;
   border-radius:12px;
   cursor:pointer;
+  font-size:15px;
 }
+
+/* ========================= */
 
 .summary-grid{
   display:grid;
@@ -131,7 +136,7 @@ body{
 }
 
 .summary-value{
-  font-size:52px;
+  font-size:48px;
   font-weight:bold;
 }
 
@@ -151,7 +156,7 @@ body{
   color:#a855f7;
 }
 
-/* ======================= */
+/* ========================= */
 
 .section{
   margin-top:40px;
@@ -165,7 +170,7 @@ body{
 }
 
 .section-title{
-  font-size:42px;
+  font-size:36px;
   font-weight:bold;
 }
 
@@ -176,17 +181,17 @@ body{
   gap:24px;
 }
 
-/* ======================= */
+/* ========================= */
 
 .item-card{
   background:#0f172a;
   border:1px solid #1e293b;
-  border-radius:20px;
+  border-radius:22px;
   padding:28px;
 }
 
 .item-title{
-  font-size:34px;
+  font-size:28px;
   font-weight:bold;
 }
 
@@ -203,59 +208,62 @@ table{
 th{
   color:#94a3b8;
   text-align:left;
+  font-size:13px;
   padding-bottom:10px;
 }
 
 td{
-  padding-bottom:22px;
+  padding-bottom:20px;
   font-size:18px;
   font-weight:bold;
 }
 
 .edit-input{
-  width:160px;
-  padding:14px;
+  width:150px;
+  padding:12px;
   background:#020617;
   border:1px solid #334155;
-  border-radius:12px;
+  border-radius:10px;
   color:white;
-  font-size:18px;
+  font-size:17px;
 }
+
+/* ========================= */
 
 .final-box{
   background:#091226;
   border:1px solid #243041;
   border-radius:18px;
   padding:20px;
-  margin-top:20px;
+  margin-top:18px;
 }
 
 .final-grid{
   display:grid;
   grid-template-columns:repeat(3,1fr);
-  gap:14px;
+  gap:12px;
 }
 
 .final-item{
   background:#111827;
+  padding:14px;
   border-radius:12px;
-  padding:16px;
 }
 
 .final-label{
   color:#94a3b8;
-  font-size:13px;
+  font-size:12px;
 }
 
 .final-value{
-  margin-top:8px;
+  margin-top:6px;
   font-size:24px;
   font-weight:bold;
 }
 
 .final-status{
-  margin-top:20px;
-  font-size:24px;
+  margin-top:18px;
+  font-size:22px;
   font-weight:bold;
 }
 
@@ -266,8 +274,8 @@ td{
   padding:14px 24px;
   border-radius:12px;
   cursor:pointer;
-  font-size:18px;
   margin-top:24px;
+  font-size:18px;
 }
 
 </style>
@@ -305,7 +313,7 @@ td{
 <script>
 
 const API_URL =
-"https://script.google.com/macros/s/AKfycbzjwKvd9784B98uQpgU6FMkPxQk1ck8t2tLZbnLCpE6-p7nwRwqOmMwJcG9m-FVoc4f/exec";
+"https://script.google.com/macros/s/AKfycbyk2qqKFw2Hdeiv0JbxH4c5C4I6Z2o4ewJYeMtzqa-XuzYHav6aM_ns5repHRDl8_iy/exec";
 
 let GLOBAL_DATA = [];
 let GLOBAL_GROUPED = {};
@@ -324,7 +332,7 @@ fetch(API_URL)
 
 /* ========================= */
 
-function getLineStatus(r){
+function getStatus(r){
 
   if(r.REVIEWED === "YES"){
     return "REVIEWED";
@@ -351,18 +359,12 @@ function getLineStatus(r){
   const diff =
     Math.abs(poPrice - ucPrice);
 
-  const mrpMatch =
-    poMRP === ucMRP;
-
-  const gstMatch =
-    poGST === ucGST;
-
   if(
     diff === 0
     &&
-    mrpMatch
+    poMRP === ucMRP
     &&
-    gstMatch
+    poGST === ucGST
   ){
     return "CLEAN";
   }
@@ -370,57 +372,14 @@ function getLineStatus(r){
   if(
     diff <= 1
     &&
-    mrpMatch
+    poMRP === ucMRP
     &&
-    gstMatch
+    poGST === ucGST
   ){
     return "AUTO_APPROVED";
   }
 
   return "NEEDS_REVIEW";
-
-}
-
-/* ========================= */
-
-function getPOStatus(rows){
-
-  let hasReview = false;
-  let hasReviewed = false;
-  let hasAuto = false;
-
-  rows.forEach(r => {
-
-    const s =
-      getLineStatus(r);
-
-    if(s === "NEEDS_REVIEW"){
-      hasReview = true;
-    }
-
-    if(s === "REVIEWED"){
-      hasReviewed = true;
-    }
-
-    if(s === "AUTO_APPROVED"){
-      hasAuto = true;
-    }
-
-  });
-
-  if(hasReviewed){
-    return "REVIEWED";
-  }
-
-  if(hasReview){
-    return "NEEDS_REVIEW";
-  }
-
-  if(hasAuto){
-    return "AUTO_APPROVED";
-  }
-
-  return "CLEAN";
 
 }
 
@@ -444,26 +403,41 @@ function buildDashboard(data){
 
   GLOBAL_GROUPED = grouped;
 
+  renderSummary();
+
+  renderSidebar("ALL");
+
+}
+
+/* ========================= */
+
+function renderSummary(){
+
   let clean = 0;
   let auto = 0;
   let review = 0;
   let reviewed = 0;
 
-  Object.keys(grouped).forEach(po => {
+  Object.keys(GLOBAL_GROUPED)
+  .forEach(po => {
 
-    const s =
-      getPOStatus(grouped[po]);
+    GLOBAL_GROUPED[po]
+    .forEach(r => {
 
-    if(s === "CLEAN") clean++;
-    if(s === "AUTO_APPROVED") auto++;
-    if(s === "NEEDS_REVIEW") review++;
-    if(s === "REVIEWED") reviewed++;
+      const s = getStatus(r);
+
+      if(s === "CLEAN") clean++;
+      if(s === "AUTO_APPROVED") auto++;
+      if(s === "NEEDS_REVIEW") review++;
+      if(s === "REVIEWED") reviewed++;
+
+    });
 
   });
 
-  document
-  .getElementById("topDashboard")
-  .innerHTML = `
+  document.getElementById(
+    "topDashboard"
+  ).innerHTML = `
 
     <div class="top-header">
 
@@ -479,33 +453,25 @@ function buildDashboard(data){
 
       </div>
 
-      <button
-      class="export-btn"
-      onclick="exportAll()">
-
-        EXPORT ALL
-
-      </button>
-
     </div>
 
     <div class="summary-grid">
 
       <div class="summary-card"
-      onclick="filterPOs('ALL')">
+      onclick="renderSidebar('ALL')">
 
         <div class="summary-title">
-          TOTAL POs
+          TOTAL
         </div>
 
         <div class="summary-value">
-          ${Object.keys(grouped).length}
+          ${GLOBAL_DATA.length}
         </div>
 
       </div>
 
       <div class="summary-card"
-      onclick="filterPOs('CLEAN')">
+      onclick="renderSidebar('CLEAN')">
 
         <div class="summary-title">
           CLEAN
@@ -518,7 +484,7 @@ function buildDashboard(data){
       </div>
 
       <div class="summary-card"
-      onclick="filterPOs('AUTO_APPROVED')">
+      onclick="renderSidebar('AUTO_APPROVED')">
 
         <div class="summary-title">
           AUTO APPROVED
@@ -531,7 +497,7 @@ function buildDashboard(data){
       </div>
 
       <div class="summary-card"
-      onclick="filterPOs('NEEDS_REVIEW')">
+      onclick="renderSidebar('NEEDS_REVIEW')">
 
         <div class="summary-title">
           NEEDS REVIEW
@@ -544,7 +510,7 @@ function buildDashboard(data){
       </div>
 
       <div class="summary-card"
-      onclick="filterPOs('REVIEWED')">
+      onclick="renderSidebar('REVIEWED')">
 
         <div class="summary-title">
           REVIEWED
@@ -556,33 +522,22 @@ function buildDashboard(data){
 
       </div>
 
-      <div class="summary-card">
-
-        <div class="summary-title">
-          PO LINES
-        </div>
-
-        <div class="summary-value">
-          ${data.length}
-        </div>
-
-      </div>
-
     </div>
 
   `;
-
-  filterPOs("ALL");
 
 }
 
 /* ========================= */
 
-function filterPOs(type){
+function renderSidebar(filter){
 
-  document
-  .getElementById("sidebarPOs")
-  .innerHTML = "";
+  const sidebar =
+    document.getElementById(
+      "sidebarPOs"
+    );
+
+  sidebar.innerHTML = "";
 
   Object.keys(GLOBAL_GROUPED)
   .forEach(po => {
@@ -590,18 +545,45 @@ function filterPOs(type){
     const rows =
       GLOBAL_GROUPED[po];
 
-    const status =
-      getPOStatus(rows);
+    const matched =
+      rows.filter(r => {
 
-    if(type === "ALL" || status === type){
+        if(filter === "ALL"){
+          return true;
+        }
 
-      addSidebarPO(
-        po,
-        rows,
-        status
-      );
+        return getStatus(r) === filter;
 
+      });
+
+    if(matched.length === 0){
+      return;
     }
+
+    const div =
+      document.createElement("div");
+
+    div.className = "po-item";
+
+    div.innerHTML = `
+
+      <div class="po-title">
+        ${po}
+      </div>
+
+      <div class="po-lines">
+        ${matched.length} lines
+      </div>
+
+    `;
+
+    div.onclick = () => {
+
+      renderPO(po, matched);
+
+    };
+
+    sidebar.appendChild(div);
 
   });
 
@@ -609,95 +591,31 @@ function filterPOs(type){
 
 /* ========================= */
 
-function addSidebarPO(
-  po,
-  rows,
-  status
-){
+function renderPO(po, rows){
 
-  let color = "#22c55e";
+  const container =
+    document.getElementById(
+      "poContent"
+    );
 
-  if(status === "AUTO_APPROVED"){
-    color = "#3b82f6";
-  }
+  let html = `
+    <div class="section">
 
-  if(status === "NEEDS_REVIEW"){
-    color = "#ff9800";
-  }
+    <div class="section-header">
 
-  if(status === "REVIEWED"){
-    color = "#a855f7";
-  }
-
-  const div =
-    document.createElement("div");
-
-  div.className = "po-item";
-
-  div.onclick = () => {
-
-    renderPO(po);
-
-  };
-
-  div.innerHTML = `
-
-    <div class="po-title">
-
-      ${po}
-
-      <span class="status-dot"
-      style="background:${color}">
-      </span>
+      <div class="section-title">
+        ${po}
+      </div>
 
     </div>
 
-    <div class="po-lines">
-      ${rows.length} lines
-    </div>
-
+    <div class="po-grid">
   `;
-
-  document
-  .getElementById("sidebarPOs")
-  .appendChild(div);
-
-}
-
-/* ========================= */
-
-function renderPO(po){
-
-  const rows =
-    GLOBAL_GROUPED[po];
-
-  let html = "";
 
   rows.forEach(r => {
 
-    const poPrice =
-      Number(r.PO_PRICE || 0);
-
-    const ucPrice =
-      Number(r.UC_PRICE || 0);
-
-    const poMRP =
-      Number(r.PO_MRP || 0);
-
-    const ucMRP =
-      Number(r.UC_MRP || 0);
-
-    const poGST =
-      Number(r.PO_GST || 0);
-
-    const ucGST =
-      Number(r.UC_GST || 0);
-
-    const diff =
-      Math.abs(poPrice - ucPrice);
-
-    const finalStatus =
-      getLineStatus(r);
+    const status =
+      getStatus(r);
 
     html += `
 
@@ -708,7 +626,7 @@ function renderPO(po){
         </div>
 
         <div class="item-sub">
-          ${po}
+          ${r.PoNumber}
         </div>
 
         <table>
@@ -716,7 +634,6 @@ function renderPO(po){
           <tr>
             <th>PO_PRICE</th>
             <th>UC_PRICE</th>
-            <th>DIFF</th>
           </tr>
 
           <tr>
@@ -725,18 +642,14 @@ function renderPO(po){
               <input
               id="po_price_${r.rowNumber}"
               class="edit-input"
-              value="${poPrice}">
+              value="${r.PO_PRICE}">
             </td>
 
             <td>
               <input
               id="price_${r.rowNumber}"
               class="edit-input"
-              value="${ucPrice}">
-            </td>
-
-            <td>
-              ₹${diff.toFixed(2)}
+              value="${r.UC_PRICE}">
             </td>
 
           </tr>
@@ -744,7 +657,6 @@ function renderPO(po){
           <tr>
             <th>PO_MRP</th>
             <th>UC_MRP</th>
-            <th>STATUS</th>
           </tr>
 
           <tr>
@@ -753,22 +665,14 @@ function renderPO(po){
               <input
               id="po_mrp_${r.rowNumber}"
               class="edit-input"
-              value="${poMRP}">
+              value="${r.PO_MRP}">
             </td>
 
             <td>
               <input
               id="mrp_${r.rowNumber}"
               class="edit-input"
-              value="${ucMRP}">
-            </td>
-
-            <td>
-              ${
-                poMRP === ucMRP
-                ? "✅ MATCH"
-                : "❌ MISMATCH"
-              }
+              value="${r.UC_MRP}">
             </td>
 
           </tr>
@@ -776,7 +680,6 @@ function renderPO(po){
           <tr>
             <th>PO_GST</th>
             <th>UC_GST</th>
-            <th>STATUS</th>
           </tr>
 
           <tr>
@@ -785,22 +688,14 @@ function renderPO(po){
               <input
               id="po_gst_${r.rowNumber}"
               class="edit-input"
-              value="${poGST}">
+              value="${r.PO_GST}">
             </td>
 
             <td>
               <input
               id="gst_${r.rowNumber}"
               class="edit-input"
-              value="${ucGST}">
-            </td>
-
-            <td>
-              ${
-                poGST === ucGST
-                ? "✅ MATCH"
-                : "❌ MISMATCH"
-              }
+              value="${r.UC_GST}">
             </td>
 
           </tr>
@@ -812,18 +707,21 @@ function renderPO(po){
           <div class="final-status">
 
             ${
-              finalStatus === "CLEAN"
-              ? "✅ CLEAN"
+              status === "REVIEWED"
+              ?
+              "🟪 REVIEWED"
 
               :
 
-              finalStatus === "AUTO_APPROVED"
-              ? "🟦 AUTO APPROVED"
+              status === "CLEAN"
+              ?
+              "✅ CLEAN"
 
               :
 
-              finalStatus === "REVIEWED"
-              ? "🟪 REVIEWED"
+              status === "AUTO_APPROVED"
+              ?
+              "🟦 AUTO APPROVED"
 
               :
 
@@ -848,29 +746,12 @@ function renderPO(po){
 
   });
 
-  document
-  .getElementById("poContent")
-  .innerHTML = `
-
-    <div class="section">
-
-      <div class="section-header">
-
-        <div class="section-title">
-          ${po}
-        </div>
-
-      </div>
-
-      <div class="po-grid">
-
-        ${html}
-
-      </div>
-
+  html += `
     </div>
-
+    </div>
   `;
+
+  container.innerHTML = html;
 
 }
 
@@ -878,35 +759,43 @@ function renderPO(po){
 
 async function saveEdit(rowNumber){
 
-  const PO_PRICE =
-    document.getElementById(
-      `po_price_${rowNumber}`
-    ).value;
+  const payload = {
 
-  const PO_MRP =
-    document.getElementById(
-      `po_mrp_${rowNumber}`
-    ).value;
+    rowNumber,
 
-  const PO_GST =
-    document.getElementById(
-      `po_gst_${rowNumber}`
-    ).value;
+    PO_PRICE:
+      document.getElementById(
+        `po_price_${rowNumber}`
+      ).value,
 
-  const UC_PRICE =
-    document.getElementById(
-      `price_${rowNumber}`
-    ).value;
+    PO_MRP:
+      document.getElementById(
+        `po_mrp_${rowNumber}`
+      ).value,
 
-  const UC_GST =
-    document.getElementById(
-      `gst_${rowNumber}`
-    ).value;
+    PO_GST:
+      document.getElementById(
+        `po_gst_${rowNumber}`
+      ).value,
 
-  const UC_MRP =
-    document.getElementById(
-      `mrp_${rowNumber}`
-    ).value;
+    UC_PRICE:
+      document.getElementById(
+        `price_${rowNumber}`
+      ).value,
+
+    UC_MRP:
+      document.getElementById(
+        `mrp_${rowNumber}`
+      ).value,
+
+    UC_GST:
+      document.getElementById(
+        `gst_${rowNumber}`
+      ).value,
+
+    REVIEWED:"YES"
+
+  };
 
   try{
 
@@ -917,24 +806,10 @@ async function saveEdit(rowNumber){
       mode:"no-cors",
 
       headers:{
-        "Content-Type":"text/plain"
+        "Content-Type":"application/json"
       },
 
-      body: JSON.stringify({
-
-        rowNumber,
-
-        PO_PRICE,
-        PO_MRP,
-        PO_GST,
-
-        UC_PRICE,
-        UC_GST,
-        UC_MRP,
-
-        REVIEWED:"YES"
-
-      })
+      body: JSON.stringify(payload)
 
     });
 
@@ -946,11 +821,11 @@ async function saveEdit(rowNumber){
 
       location.reload();
 
-    },1000);
+    },1200);
 
-  }catch(error){
+  }catch(err){
 
-    console.log(error);
+    console.log(err);
 
     alert(
       "Save Failed"

@@ -142,6 +142,7 @@ body{
   border:1px solid #1f2937;
   border-radius:18px;
   padding:24px;
+  cursor:pointer;
 }
 
 .summary-title{
@@ -324,10 +325,11 @@ td,th{
 <script>
 
 const API_URL =
-"https://script.google.com/macros/s/AKfycbx3f0u4g7MQnphRX22C5VHpersJN8QPG9pfS4g3pBOaMDf1EHv2cu_6vRe3iV5VdHyY/exec";
+"https://script.google.com/macros/s/AKfycbxPCBRZmk8bSjDPNcWiFLDrLYjPY9RzDaCoRpWI3rJOul9DLM4pazeisPHfYKpAkL6b/exec";
 
 let GLOBAL_DATA = [];
 let GLOBAL_GROUPED = {};
+let CURRENT_FILTER = "ALL";
 
 /* ===================================== */
 
@@ -426,13 +428,6 @@ function buildDashboard(data){
       cleanPOs++;
     }
 
-    addSidebarPO(
-      po,
-      rows,
-      hasReview,
-      hasAuto
-    );
-
   });
 
   document.getElementById("topDashboard")
@@ -463,59 +458,181 @@ function buildDashboard(data){
 
     <div class="summary-grid">
 
-      <div class="summary-card">
+      <div class="summary-card"
+      onclick="filterPOs('ALL')">
+
         <div class="summary-title">
           TOTAL POs
         </div>
+
         <div class="summary-value">
           ${Object.keys(grouped).length}
         </div>
+
       </div>
 
       <div class="summary-card">
+
         <div class="summary-title">
           PO LINES
         </div>
+
         <div class="summary-value">
           ${data.length}
         </div>
+
       </div>
 
-      <div class="summary-card">
+      <div class="summary-card"
+      onclick="filterPOs('CLEAN')">
+
         <div class="summary-title">
           CLEAN
         </div>
+
         <div class="summary-value green">
           ${cleanPOs}
         </div>
+
       </div>
 
-      <div class="summary-card">
+      <div class="summary-card"
+      onclick="filterPOs('AUTO')">
+
         <div class="summary-title">
           AUTO APPROVED
         </div>
+
         <div class="summary-value blue">
           ${autoPOs}
         </div>
+
       </div>
 
-      <div class="summary-card">
+      <div class="summary-card"
+      onclick="filterPOs('REVIEW')">
+
         <div class="summary-title">
           NEEDS REVIEW
         </div>
+
         <div class="summary-value orange">
           ${reviewPOs}
         </div>
+
       </div>
 
     </div>
 
   `;
 
-  const firstPO =
-    Object.keys(grouped)[0];
+  filterPOs("ALL");
 
-  renderPO(firstPO);
+}
+
+/* ===================================== */
+
+function filterPOs(type){
+
+  CURRENT_FILTER = type;
+
+  document
+    .getElementById("sidebarPOs")
+    .innerHTML = "";
+
+  Object.keys(GLOBAL_GROUPED)
+  .forEach(po => {
+
+    const rows =
+      GLOBAL_GROUPED[po];
+
+    let hasReview = false;
+    let hasAuto = false;
+
+    rows.forEach(r => {
+
+      const poPrice =
+        Number(r.PO_PRICE || 0);
+
+      const ucPrice =
+        Number(r.UC_PRICE || 0);
+
+      const poMRP =
+        Number(r.PO_MRP || 0);
+
+      const ucMRP =
+        Number(r.UC_MRP || 0);
+
+      const poGST =
+        Number(r.PO_GST || 0);
+
+      const ucGST =
+        Number(r.UC_GST || 0);
+
+      const priceDiff =
+        Math.abs(poPrice - ucPrice);
+
+      const mrpMatch =
+        poMRP === ucMRP;
+
+      const gstMatch =
+        poGST === ucGST;
+
+      if(
+        priceDiff > 1
+        ||
+        !mrpMatch
+        ||
+        !gstMatch
+      ){
+        hasReview = true;
+      }
+      else if(priceDiff > 0){
+        hasAuto = true;
+      }
+
+    });
+
+    let show = false;
+
+    if(type === "ALL"){
+      show = true;
+    }
+
+    if(type === "CLEAN"
+      &&
+      !hasReview
+      &&
+      !hasAuto){
+      show = true;
+    }
+
+    if(type === "AUTO"
+      &&
+      hasAuto
+      &&
+      !hasReview){
+      show = true;
+    }
+
+    if(type === "REVIEW"
+      &&
+      hasReview){
+      show = true;
+    }
+
+    if(show){
+
+      addSidebarPO(
+        po,
+        rows,
+        hasReview,
+        hasAuto
+      );
+
+    }
+
+  });
 
 }
 
@@ -576,414 +693,14 @@ function addSidebarPO(
 
 function renderPO(po){
 
-  const rows =
-    GLOBAL_GROUPED[po];
-
-  let reviewHTML = "";
-  let autoHTML = "";
-  let cleanHTML = "";
-
-  rows.forEach(r => {
-
-    const poPrice =
-      Number(r.PO_PRICE || 0);
-
-    const ucPrice =
-      Number(r.UC_PRICE || 0);
-
-    const poMRP =
-      Number(r.PO_MRP || 0);
-
-    const ucMRP =
-      Number(r.UC_MRP || 0);
-
-    const poGST =
-      Number(r.PO_GST || 0);
-
-    const ucGST =
-      Number(r.UC_GST || 0);
-
-    const priceDiff =
-      Math.abs(poPrice - ucPrice);
-
-    const mrpMatch =
-      poMRP === ucMRP;
-
-    const gstMatch =
-      poGST === ucGST;
-
-    let status = "";
-    let badge = "";
-    let reason = "";
-
-    if(
-      priceDiff === 0
-      &&
-      mrpMatch
-      &&
-      gstMatch
-    ){
-
-      status = "clean";
-
-      badge =
-      `<span class="badge clean-badge">
-        CLEAN
-      </span>`;
-
-      reason =
-      "PRICE, GST & MRP matched";
-
-    }
-    else if(
-      priceDiff <= 1
-      &&
-      mrpMatch
-      &&
-      gstMatch
-    ){
-
-      status = "auto";
-
-      badge =
-      `<span class="badge auto-badge">
-        AUTO APPROVED
-      </span>`;
-
-      reason =
-      "PRICE diff below ₹1";
-
-    }
-    else{
-
-      status = "review";
-
-      badge =
-      `<span class="badge review-badge">
-        NEEDS REVIEW
-      </span>`;
-
-      reason =
-      "PRICE / GST / MRP mismatch";
-
-    }
-
-    const card = `
-
-      <div class="item-card">
-
-        <div class="item-title">
-          ${r.SKU_ID}
-        </div>
-
-        <div class="item-sub">
-          PO ${po}
-        </div>
-
-        <table>
-
-          <tr>
-
-            <th>PO_PRICE</th>
-            <th>UC_PRICE</th>
-            <th>PRICE_DIFF</th>
-
-          </tr>
-
-          <tr>
-
-            <td>
-
-              <input
-                id="po_price_${r.rowNumber}"
-                class="edit-input"
-                value="${poPrice}"
-              >
-
-            </td>
-
-            <td>
-
-              <input
-                id="price_${r.rowNumber}"
-                class="edit-input"
-                value="${ucPrice}"
-              >
-
-            </td>
-
-            <td>
-              ₹${priceDiff.toFixed(2)}
-            </td>
-
-          </tr>
-
-          <tr>
-
-            <th>PO_MRP</th>
-            <th>UC_MRP</th>
-            <th>MRP_STATUS</th>
-
-          </tr>
-
-          <tr>
-
-            <td>
-
-              <input
-                id="po_mrp_${r.rowNumber}"
-                class="edit-input"
-                value="${poMRP}"
-              >
-
-            </td>
-
-            <td>
-
-              <input
-                id="mrp_${r.rowNumber}"
-                class="edit-input"
-                value="${ucMRP}"
-              >
-
-            </td>
-
-            <td>
-
-              ${
-                mrpMatch
-                ?
-                '✅ MATCH'
-                :
-                '❌ MISMATCH'
-              }
-
-            </td>
-
-          </tr>
-
-          <tr>
-
-            <th>PO_GST</th>
-            <th>UC_GST</th>
-            <th>GST_STATUS</th>
-
-          </tr>
-
-          <tr>
-
-            <td>
-
-              <input
-                id="po_gst_${r.rowNumber}"
-                class="edit-input"
-                value="${poGST}"
-              >
-
-            </td>
-
-            <td>
-
-              <input
-                id="gst_${r.rowNumber}"
-                class="edit-input"
-                value="${ucGST}"
-              >
-
-            </td>
-
-            <td>
-
-              ${
-                gstMatch
-                ?
-                '✅ MATCH'
-                :
-                '❌ MISMATCH'
-              }
-
-            </td>
-
-          </tr>
-
-        </table>
-
-        <button
-          class="save-btn"
-          onclick="saveEdit(${r.rowNumber})">
-
-          SAVE
-
-        </button>
-
-        <br>
-
-        ${badge}
-
-        <div class="reason">
-          ${reason}
-        </div>
-
-      </div>
-
-    `;
-
-    if(status === "clean"){
-      cleanHTML += card;
-    }
-
-    if(status === "auto"){
-      autoHTML += card;
-    }
-
-    if(status === "review"){
-      reviewHTML += card;
-    }
-
-  });
-
   document.getElementById("poContent")
   .innerHTML = `
-
     <div class="section">
-
-      <div class="section-header">
-
-        <div class="section-title">
-          ${po}
-        </div>
-
-        <button class="export-btn"
-        onclick="exportPO('${po}')">
-
-          EXPORT PO
-
-        </button>
-
+      <div class="section-title">
+        ${po}
       </div>
-
     </div>
-
-    <div class="section">
-
-      <div class="section-header">
-        <div class="section-title">
-          Needs Review
-        </div>
-      </div>
-
-      <div class="po-grid">
-
-        ${reviewHTML || '<div class="empty">No review lines</div>'}
-
-      </div>
-
-    </div>
-
-    <div class="section">
-
-      <div class="section-header">
-        <div class="section-title">
-          Auto Approved
-        </div>
-      </div>
-
-      <div class="po-grid">
-
-        ${autoHTML || '<div class="empty">No auto approved lines</div>'}
-
-      </div>
-
-    </div>
-
-    <div class="section">
-
-      <div class="section-header">
-        <div class="section-title">
-          Clean
-        </div>
-      </div>
-
-      <div class="po-grid">
-
-        ${cleanHTML || '<div class="empty">No clean lines</div>'}
-
-      </div>
-
-    </div>
-
   `;
-
-}
-
-/* ===================================== */
-
-async function saveEdit(rowNumber){
-
-  const PO_PRICE =
-    document.getElementById(
-      `po_price_${rowNumber}`
-    ).value;
-
-  const PO_MRP =
-    document.getElementById(
-      `po_mrp_${rowNumber}`
-    ).value;
-
-  const PO_GST =
-    document.getElementById(
-      `po_gst_${rowNumber}`
-    ).value;
-
-  const UC_PRICE =
-    document.getElementById(
-      `price_${rowNumber}`
-    ).value;
-
-  const UC_GST =
-    document.getElementById(
-      `gst_${rowNumber}`
-    ).value;
-
-  const UC_MRP =
-    document.getElementById(
-      `mrp_${rowNumber}`
-    ).value;
-
-  await fetch(API_URL, {
-
-    method:"POST",
-
-    body: JSON.stringify({
-
-      rowNumber,
-
-      PO_PRICE,
-      PO_MRP,
-      PO_GST,
-
-      UC_PRICE,
-      UC_GST,
-      UC_MRP
-
-    })
-
-  });
-
-  alert("Updated Successfully");
-
-  location.reload();
-
-}
-
-/* ===================================== */
-
-function exportPO(po){
-
-  const rows =
-    GLOBAL_GROUPED[po];
-
-  exportCSV(rows, po + ".csv");
 
 }
 
@@ -1005,98 +722,31 @@ function exportCSV(rows, filename){
   let csvRows = [];
 
   csvRows.push([
-
     "PoNumber",
     "SKU_ID",
-
     "PO_PRICE",
     "UC_PRICE",
-    "PRICE_DIFF",
-
     "PO_MRP",
     "UC_MRP",
-    "MRP_STATUS",
-
     "PO_GST",
-    "UC_GST",
-    "GST_STATUS",
-
-    "FINAL_STATUS"
-
+    "UC_GST"
   ]);
 
   rows.forEach(r => {
-
-    const poPrice =
-      Number(r.PO_PRICE || 0);
-
-    const ucPrice =
-      Number(r.UC_PRICE || 0);
-
-    const poMRP =
-      Number(r.PO_MRP || 0);
-
-    const ucMRP =
-      Number(r.UC_MRP || 0);
-
-    const poGST =
-      Number(r.PO_GST || 0);
-
-    const ucGST =
-      Number(r.UC_GST || 0);
-
-    const priceDiff =
-      Math.abs(poPrice - ucPrice);
-
-    const mrpStatus =
-      poMRP === ucMRP
-      ? "MATCH"
-      : "MISMATCH";
-
-    const gstStatus =
-      poGST === ucGST
-      ? "MATCH"
-      : "MISMATCH";
-
-    let finalStatus = "REVIEW";
-
-    if(
-      priceDiff === 0
-      &&
-      mrpStatus === "MATCH"
-      &&
-      gstStatus === "MATCH"
-    ){
-      finalStatus = "CLEAN";
-    }
-    else if(
-      priceDiff <= 1
-      &&
-      mrpStatus === "MATCH"
-      &&
-      gstStatus === "MATCH"
-    ){
-      finalStatus = "AUTO_APPROVED";
-    }
 
     csvRows.push([
 
       r.PoNumber,
       r.SKU_ID,
 
-      poPrice,
-      ucPrice,
-      priceDiff.toFixed(2),
+      r.PO_PRICE,
+      r.UC_PRICE,
 
-      poMRP,
-      ucMRP,
-      mrpStatus,
+      r.PO_MRP,
+      r.UC_MRP,
 
-      poGST,
-      ucGST,
-      gstStatus,
-
-      finalStatus
+      r.PO_GST,
+      r.UC_GST
 
     ]);
 
@@ -1139,4 +789,5 @@ function downloadCSV(csv, filename){
 </script>
 
 </body>
+
 </html>

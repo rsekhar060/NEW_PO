@@ -349,150 +349,7 @@ fetch(API_URL)
 
 });
 
-function buildDashboard(data){
-
-  const grouped = {};
-
-  data.forEach(r => {
-
-    const po = r.PoNumber;
-
-    if(!grouped[po]){
-      grouped[po] = [];
-    }
-
-    grouped[po].push(r);
-
-  });
-
-  GLOBAL_GROUPED = grouped;
-
-  let cleanPOs = 0;
-  let reviewPOs = 0;
-  let autoPOs = 0;
-
-  Object.keys(grouped).forEach(po => {
-
-    const rows = grouped[po];
-
-    let finalStatus =
-      getPOStatus(rows);
-
-    if(finalStatus === "CLEAN"){
-      cleanPOs++;
-    }
-
-    if(finalStatus === "AUTO_APPROVED"){
-      autoPOs++;
-    }
-
-    if(finalStatus === "NEEDS_REVIEW"){
-      reviewPOs++;
-    }
-
-  });
-
-  document.getElementById(
-    "topDashboard"
-  ).innerHTML = `
-
-    <div class="top-header">
-
-      <div>
-
-        <div class="page-title">
-          TP Dashboard
-        </div>
-
-        <div class="page-sub">
-          Instamart Validation Dashboard
-        </div>
-
-      </div>
-
-      <button
-      class="export-btn"
-      onclick="exportAll()">
-
-        EXPORT ALL
-
-      </button>
-
-    </div>
-
-    <div class="summary-grid">
-
-      <div class="summary-card"
-      onclick="filterPOs('ALL')">
-
-        <div class="summary-title">
-          TOTAL POs
-        </div>
-
-        <div class="summary-value">
-          ${Object.keys(grouped).length}
-        </div>
-
-      </div>
-
-      <div class="summary-card">
-
-        <div class="summary-title">
-          PO LINES
-        </div>
-
-        <div class="summary-value">
-          ${data.length}
-        </div>
-
-      </div>
-
-      <div class="summary-card"
-      onclick="filterPOs('CLEAN')">
-
-        <div class="summary-title">
-          CLEAN
-        </div>
-
-        <div class="summary-value green">
-          ${cleanPOs}
-        </div>
-
-      </div>
-
-      <div class="summary-card"
-      onclick="filterPOs('AUTO_APPROVED')">
-
-        <div class="summary-title">
-          AUTO APPROVED
-        </div>
-
-        <div class="summary-value blue">
-          ${autoPOs}
-        </div>
-
-      </div>
-
-      <div class="summary-card"
-      onclick="filterPOs('NEEDS_REVIEW')">
-
-        <div class="summary-title">
-          NEEDS REVIEW
-        </div>
-
-        <div class="summary-value orange">
-          ${reviewPOs}
-        </div>
-
-      </div>
-
-    </div>
-
-  `;
-
-  filterPOs("ALL");
-
-}
+/* ===================================== */
 
 function getLineStatus(r){
 
@@ -547,37 +404,31 @@ function getLineStatus(r){
 
 }
 
-function getPOStatus(rows){
+/* ===================================== */
 
-  let hasReview = false;
-  let hasAuto = false;
+function buildDashboard(data){
 
-  rows.forEach(r => {
+  const grouped = {};
 
-    const status =
-      getLineStatus(r);
+  data.forEach(r => {
 
-    if(status === "NEEDS_REVIEW"){
-      hasReview = true;
+    const po = r.PoNumber;
+
+    if(!grouped[po]){
+      grouped[po] = [];
     }
 
-    if(status === "AUTO_APPROVED"){
-      hasAuto = true;
-    }
+    grouped[po].push(r);
 
   });
 
-  if(hasReview){
-    return "NEEDS_REVIEW";
-  }
+  GLOBAL_GROUPED = grouped;
 
-  if(hasAuto){
-    return "AUTO_APPROVED";
-  }
-
-  return "CLEAN";
+  filterPOs("ALL");
 
 }
+
+/* ===================================== */
 
 function filterPOs(type){
 
@@ -591,48 +442,15 @@ function filterPOs(type){
     const rows =
       GLOBAL_GROUPED[po];
 
-    const status =
-      getPOStatus(rows);
-
-    let show = false;
-
-    if(type === "ALL"){
-      show = true;
-    }
-
-    if(type === status){
-      show = true;
-    }
-
-    if(show){
-
-      addSidebarPO(
-        po,
-        rows,
-        status
-      );
-
-    }
+    addSidebarPO(po,rows);
 
   });
 
 }
 
-function addSidebarPO(
-  po,
-  rows,
-  status
-){
+/* ===================================== */
 
-  let color = "#22c55e";
-
-  if(status === "AUTO_APPROVED"){
-    color = "#3b82f6";
-  }
-
-  if(status === "NEEDS_REVIEW"){
-    color = "#ff8a00";
-  }
+function addSidebarPO(po,rows){
 
   const div =
     document.createElement("div");
@@ -648,13 +466,7 @@ function addSidebarPO(
   div.innerHTML = `
 
     <div class="po-title">
-
       ${po}
-
-      <span class="status-dot"
-      style="background:${color}">
-      </span>
-
     </div>
 
     <div class="po-lines">
@@ -669,14 +481,14 @@ function addSidebarPO(
 
 }
 
+/* ===================================== */
+
 function renderPO(po){
 
   const rows =
     GLOBAL_GROUPED[po];
 
-  let reviewHTML = "";
-  let autoHTML = "";
-  let cleanHTML = "";
+  let html = "";
 
   rows.forEach(r => {
 
@@ -701,12 +513,6 @@ function renderPO(po){
     const priceDiff =
       Math.abs(poPrice - ucPrice);
 
-    const mrpMatch =
-      poMRP === ucMRP;
-
-    const gstMatch =
-      poGST === ucGST;
-
     const finalStatus =
       getLineStatus(r);
 
@@ -716,58 +522,16 @@ function renderPO(po){
       : ucPrice;
 
     const finalMRP =
-      mrpMatch
+      poMRP === ucMRP
       ? poMRP
       : ucMRP;
 
     const finalGST =
-      gstMatch
+      poGST === ucGST
       ? poGST
       : ucGST;
 
-    let badge = "";
-    let reason = "";
-
-    if(finalStatus === "CLEAN"){
-
-      badge =
-      `<span class="badge clean-badge">
-        CLEAN
-      </span>`;
-
-      reason =
-      "PRICE, GST & MRP matched";
-
-    }
-
-    else if(
-      finalStatus ===
-      "AUTO_APPROVED"
-    ){
-
-      badge =
-      `<span class="badge auto-badge">
-        AUTO APPROVED
-      </span>`;
-
-      reason =
-      "PRICE diff below ₹1";
-
-    }
-
-    else{
-
-      badge =
-      `<span class="badge review-badge">
-        NEEDS REVIEW
-      </span>`;
-
-      reason =
-      "PRICE / GST / MRP mismatch";
-
-    }
-
-    const card = `
+    html += `
 
       <div class="item-card">
 
@@ -776,114 +540,10 @@ function renderPO(po){
         </div>
 
         <div class="item-sub">
-          PO ${po}
+          ${po}
         </div>
 
-        <table>
-
-          <tr>
-            <th>PO_PRICE</th>
-            <th>UC_PRICE</th>
-            <th>DIFF</th>
-          </tr>
-
-          <tr>
-
-            <td>
-              <input
-              id="po_price_${r.rowNumber}"
-              class="edit-input"
-              value="${poPrice}">
-            </td>
-
-            <td>
-              <input
-              id="price_${r.rowNumber}"
-              class="edit-input"
-              value="${ucPrice}">
-            </td>
-
-            <td>
-              ₹${priceDiff.toFixed(2)}
-            </td>
-
-          </tr>
-
-          <tr>
-            <th>PO_MRP</th>
-            <th>UC_MRP</th>
-            <th>STATUS</th>
-          </tr>
-
-          <tr>
-
-            <td>
-              <input
-              id="po_mrp_${r.rowNumber}"
-              class="edit-input"
-              value="${poMRP}">
-            </td>
-
-            <td>
-              <input
-              id="mrp_${r.rowNumber}"
-              class="edit-input"
-              value="${ucMRP}">
-            </td>
-
-            <td>
-              ${
-                mrpMatch
-                ?
-                "✅ MATCH"
-                :
-                "❌ MISMATCH"
-              }
-            </td>
-
-          </tr>
-
-          <tr>
-            <th>PO_GST</th>
-            <th>UC_GST</th>
-            <th>STATUS</th>
-          </tr>
-
-          <tr>
-
-            <td>
-              <input
-              id="po_gst_${r.rowNumber}"
-              class="edit-input"
-              value="${poGST}">
-            </td>
-
-            <td>
-              <input
-              id="gst_${r.rowNumber}"
-              class="edit-input"
-              value="${ucGST}">
-            </td>
-
-            <td>
-              ${
-                gstMatch
-                ?
-                "✅ MATCH"
-                :
-                "❌ MISMATCH"
-              }
-            </td>
-
-          </tr>
-
-        </table>
-
         <div class="final-box">
-
-          <div class="final-label">
-            FINAL VALUES
-          </div>
 
           <div class="final-grid">
 
@@ -944,125 +604,201 @@ function renderPO(po){
 
         </div>
 
-        <button
-        class="save-btn"
-        onclick="saveEdit(${r.rowNumber})">
+      </div>
 
-          SAVE
+    `;
 
-        </button>
+  });
 
-        <br>
+  document
+    .getElementById("poContent")
+    .innerHTML = `
 
-        ${badge}
+      <div class="section">
 
-        <div class="reason">
-          ${reason}
+        <div class="section-header">
+
+          <div class="section-title">
+            ${po}
+          </div>
+
+          <button
+          class="export-btn"
+          onclick="exportPO('${po}')">
+
+            EXPORT PO
+
+          </button>
+
+        </div>
+
+        <div class="po-grid">
+
+          ${html}
+
         </div>
 
       </div>
 
     `;
 
-    if(finalStatus === "CLEAN"){
-      cleanHTML += card;
-    }
+}
 
-    if(
-      finalStatus ===
-      "AUTO_APPROVED"
-    ){
-      autoHTML += card;
-    }
+/* ===================================== */
 
-    if(
-      finalStatus ===
-      "NEEDS_REVIEW"
-    ){
-      reviewHTML += card;
-    }
+function exportPO(po){
+
+  exportCSV(
+    GLOBAL_GROUPED[po],
+    po + ".csv"
+  );
+
+}
+
+/* ===================================== */
+
+function exportAll(){
+
+  exportCSV(
+    GLOBAL_DATA,
+    "ALL_POS.csv"
+  );
+
+}
+
+/* ===================================== */
+
+function exportCSV(rows, filename){
+
+  let csvRows = [];
+
+  csvRows.push([
+
+    "PoNumber",
+    "SKU_ID",
+
+    "PO_PRICE",
+    "UC_PRICE",
+    "FINAL_PRICE",
+
+    "PO_MRP",
+    "UC_MRP",
+    "FINAL_MRP",
+
+    "PO_GST",
+    "UC_GST",
+    "FINAL_GST",
+
+    "FINAL_STATUS"
+
+  ]);
+
+  rows.forEach(r => {
+
+    const poPrice =
+      Number(r.PO_PRICE || 0);
+
+    const ucPrice =
+      Number(r.UC_PRICE || 0);
+
+    const poMRP =
+      Number(r.PO_MRP || 0);
+
+    const ucMRP =
+      Number(r.UC_MRP || 0);
+
+    const poGST =
+      Number(r.PO_GST || 0);
+
+    const ucGST =
+      Number(r.UC_GST || 0);
+
+    const priceDiff =
+      Math.abs(poPrice - ucPrice);
+
+    const finalPrice =
+      priceDiff <= 1
+      ? poPrice
+      : ucPrice;
+
+    const finalMRP =
+      poMRP === ucMRP
+      ? poMRP
+      : ucMRP;
+
+    const finalGST =
+      poGST === ucGST
+      ? poGST
+      : ucGST;
+
+    const finalStatus =
+      getLineStatus(r);
+
+    csvRows.push([
+
+      r.PoNumber,
+      r.SKU_ID,
+
+      poPrice,
+      ucPrice,
+      finalPrice,
+
+      poMRP,
+      ucMRP,
+      finalMRP,
+
+      poGST,
+      ucGST,
+      finalGST,
+
+      finalStatus
+
+    ]);
 
   });
 
-  document.getElementById(
-    "poContent"
-  ).innerHTML = `
+  let csvContent =
+    csvRows
+    .map(row =>
+      row.join(",")
+    )
+    .join("\n");
 
-    <div class="section">
+  const blob =
+    new Blob(
+      [csvContent],
+      {
+        type:
+        "text/csv;charset=utf-8;"
+      }
+    );
 
-      <div class="section-header">
+  const link =
+    document.createElement("a");
 
-        <div class="section-title">
-          ${po}
-        </div>
+  const url =
+    URL.createObjectURL(blob);
 
-        <button
-        class="export-btn"
-        onclick="exportPO('${po}')">
+  link.setAttribute(
+    "href",
+    url
+  );
 
-          EXPORT PO
+  link.setAttribute(
+    "download",
+    filename
+  );
 
-        </button>
+  link.style.visibility =
+    "hidden";
 
-      </div>
+  document.body
+    .appendChild(link);
 
-    </div>
+  link.click();
 
-    <div class="section">
-
-      <div class="section-title">
-        Needs Review
-      </div>
-
-      <div class="po-grid">
-
-        ${
-          reviewHTML
-          ||
-          '<div class="empty">No review lines</div>'
-        }
-
-      </div>
-
-    </div>
-
-    <div class="section">
-
-      <div class="section-title">
-        Auto Approved
-      </div>
-
-      <div class="po-grid">
-
-        ${
-          autoHTML
-          ||
-          '<div class="empty">No auto approved lines</div>'
-        }
-
-      </div>
-
-    </div>
-
-    <div class="section">
-
-      <div class="section-title">
-        Clean
-      </div>
-
-      <div class="po-grid">
-
-        ${
-          cleanHTML
-          ||
-          '<div class="empty">No clean lines</div>'
-        }
-
-      </div>
-
-    </div>
-
-  `;
+  document.body
+    .removeChild(link);
 
 }
 

@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+  <title>PO vs UC Validation</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+
+    body{
+      font-family:Arial;
+      background:#f4f4f4;
+      padding:20px;
+    }
+
+    h2{
+      margin-bottom:20px;
+    }
+
+    .cards{
+      display:flex;
+      gap:20px;
+      margin-bottom:20px;
+    }
+
+    .card{
+      background:white;
+      padding:20px;
+      border-radius:10px;
+      width:200px;
+      box-shadow:0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    table{
+      width:100%;
+      border-collapse:collapse;
+      background:white;
+    }
+
+    th,td{
+      border:1px solid #ddd;
+      padding:10px;
+      text-align:center;
+    }
+
+    th{
+      background:#222;
+      color:white;
+    }
+
+    .good{
+      background:#d4ffd4;
+    }
+
+    .bad{
+      background:#ffd6d6;
+    }
+
+  </style>
+
+</head>
+
+<body>
+
+<h2>PO vs UC Validation Dashboard</h2>
+
+<div class="cards">
+
+  <div class="card">
+    <h3>Total</h3>
+    <h1 id="total">0</h1>
+  </div>
+
+  <div class="card">
+    <h3>Matched</h3>
+    <h1 id="matched">0</h1>
+  </div>
+
+  <div class="card">
+    <h3>Mismatched</h3>
+    <h1 id="mismatch">0</h1>
+  </div>
+
+</div>
+
+<canvas id="chart"></canvas>
+
+<br><br>
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>PO Number</th>
+<th>SKU ID</th>
+
+<th>PO_PRICE</th>
+<th>UC_PRICE</th>
+<th>PRICE</th>
+
+<th>PO_GST</th>
+<th>UC_GST</th>
+<th>GST</th>
+
+<th>PO_MRP</th>
+<th>UC_MRP</th>
+<th>MRP</th>
+
+</tr>
+
+</thead>
+
+<tbody id="tbody"></tbody>
+
+</table>
+
+<script>
+
+const API_URL =
+"PASTE_APPS_SCRIPT_URL";
+
+fetch(API_URL)
+.then(res => res.json())
+.then(data => {
+
+  let matched = 0;
+  let mismatch = 0;
+
+  const tbody =
+    document.getElementById("tbody");
+
+  data.forEach(r => {
+
+    const price =
+      Number(r.PO_PRICE) === Number(r.UC_PRICE);
+
+    const gst =
+      Number(r.PO_GST) === Number(r.UC_GST);
+
+    const mrp =
+      Number(r.PO_MRP) === Number(r.UC_MRP);
+
+    const ok = price && gst && mrp;
+
+    if(ok){
+      matched++;
+    }else{
+      mismatch++;
+    }
+
+    tbody.innerHTML += `
+
+    <tr class="${ok ? 'good':'bad'}">
+
+      <td>${r.PoNumber}</td>
+      <td>${r.SKU_ID}</td>
+
+      <td>${r.PO_PRICE}</td>
+      <td>${r.UC_PRICE}</td>
+      <td>${price ? 'MATCH':'MISMATCH'}</td>
+
+      <td>${r.PO_GST}</td>
+      <td>${r.UC_GST}</td>
+      <td>${gst ? 'MATCH':'MISMATCH'}</td>
+
+      <td>${r.PO_MRP}</td>
+      <td>${r.UC_MRP}</td>
+      <td>${mrp ? 'MATCH':'MISMATCH'}</td>
+
+    </tr>
+
+    `;
+
+  });
+
+  document.getElementById("total")
+    .innerText = data.length;
+
+  document.getElementById("matched")
+    .innerText = matched;
+
+  document.getElementById("mismatch")
+    .innerText = mismatch;
+
+  new Chart(document.getElementById("chart"), {
+
+    type:"doughnut",
+
+    data:{
+      labels:["Matched","Mismatch"],
+      datasets:[{
+        data:[matched,mismatch]
+      }]
+    }
+
+  });
+
+});
+
+</script>
+
+</body>
+</html>

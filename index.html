@@ -227,35 +227,6 @@ td{
   cursor:pointer;
 }
 
-.badge{
-  display:inline-block;
-  padding:8px 12px;
-  border-radius:8px;
-  font-size:12px;
-  font-weight:bold;
-  margin-top:18px;
-}
-
-.clean-badge{
-  background:#052e16;
-  color:#22c55e;
-}
-
-.auto-badge{
-  background:#0a1f44;
-  color:#3b82f6;
-}
-
-.review-badge{
-  background:#3b0a0a;
-  color:#ff8a00;
-}
-
-.reviewed-badge{
-  background:#3b0764;
-  color:#c084fc;
-}
-
 .final-box{
   background:#0f172a;
   border:1px solid #334155;
@@ -344,6 +315,8 @@ fetch(API_URL)
 
 });
 
+/* ========================= */
+
 function getLineStatus(r){
 
   if(r.REVIEWED === "YES"){
@@ -401,11 +374,13 @@ function getLineStatus(r){
 
 }
 
+/* ========================= */
+
 function getPOStatus(rows){
 
   let hasReview = false;
-  let hasAuto = false;
   let hasReviewed = false;
+  let hasAuto = false;
 
   rows.forEach(r => {
 
@@ -416,12 +391,12 @@ function getPOStatus(rows){
       hasReview = true;
     }
 
-    if(status === "AUTO_APPROVED"){
-      hasAuto = true;
-    }
-
     if(status === "REVIEWED"){
       hasReviewed = true;
+    }
+
+    if(status === "AUTO_APPROVED"){
+      hasAuto = true;
     }
 
   });
@@ -441,6 +416,8 @@ function getPOStatus(rows){
   return "CLEAN";
 
 }
+
+/* ========================= */
 
 function buildDashboard(data){
 
@@ -603,6 +580,8 @@ function buildDashboard(data){
 
 }
 
+/* ========================= */
+
 function filterPOs(type){
 
   document
@@ -631,6 +610,8 @@ function filterPOs(type){
   });
 
 }
+
+/* ========================= */
 
 function addSidebarPO(
   po,
@@ -686,6 +667,502 @@ function addSidebarPO(
     .appendChild(div);
 
 }
+
+/* ========================= */
+
+function renderPO(po){
+
+  const rows =
+    GLOBAL_GROUPED[po];
+
+  let html = "";
+
+  rows.forEach(r => {
+
+    const poPrice =
+      Number(r.PO_PRICE || 0);
+
+    const ucPrice =
+      Number(r.UC_PRICE || 0);
+
+    const poMRP =
+      Number(r.PO_MRP || 0);
+
+    const ucMRP =
+      Number(r.UC_MRP || 0);
+
+    const poGST =
+      Number(r.PO_GST || 0);
+
+    const ucGST =
+      Number(r.UC_GST || 0);
+
+    const priceDiff =
+      Math.abs(poPrice - ucPrice);
+
+    const finalStatus =
+      getLineStatus(r);
+
+    const finalPrice =
+      priceDiff <= 1
+      ? poPrice
+      : ucPrice;
+
+    const finalMRP =
+      poMRP === ucMRP
+      ? poMRP
+      : ucMRP;
+
+    const finalGST =
+      poGST === ucGST
+      ? poGST
+      : ucGST;
+
+    html += `
+
+      <div class="item-card">
+
+        <div class="item-title">
+          ${r.SKU_ID}
+        </div>
+
+        <div class="item-sub">
+          ${po}
+        </div>
+
+        <table>
+
+          <tr>
+            <th>PO_PRICE</th>
+            <th>UC_PRICE</th>
+            <th>DIFF</th>
+          </tr>
+
+          <tr>
+
+            <td>
+              <input
+              id="po_price_${r.rowNumber}"
+              class="edit-input"
+              value="${poPrice}">
+            </td>
+
+            <td>
+              <input
+              id="price_${r.rowNumber}"
+              class="edit-input"
+              value="${ucPrice}">
+            </td>
+
+            <td>
+              ₹${priceDiff.toFixed(2)}
+            </td>
+
+          </tr>
+
+          <tr>
+            <th>PO_MRP</th>
+            <th>UC_MRP</th>
+            <th>STATUS</th>
+          </tr>
+
+          <tr>
+
+            <td>
+              <input
+              id="po_mrp_${r.rowNumber}"
+              class="edit-input"
+              value="${poMRP}">
+            </td>
+
+            <td>
+              <input
+              id="mrp_${r.rowNumber}"
+              class="edit-input"
+              value="${ucMRP}">
+            </td>
+
+            <td>
+              ${
+                poMRP === ucMRP
+                ?
+                "✅ MATCH"
+                :
+                "❌ MISMATCH"
+              }
+            </td>
+
+          </tr>
+
+          <tr>
+            <th>PO_GST</th>
+            <th>UC_GST</th>
+            <th>STATUS</th>
+          </tr>
+
+          <tr>
+
+            <td>
+              <input
+              id="po_gst_${r.rowNumber}"
+              class="edit-input"
+              value="${poGST}">
+            </td>
+
+            <td>
+              <input
+              id="gst_${r.rowNumber}"
+              class="edit-input"
+              value="${ucGST}">
+            </td>
+
+            <td>
+              ${
+                poGST === ucGST
+                ?
+                "✅ MATCH"
+                :
+                "❌ MISMATCH"
+              }
+            </td>
+
+          </tr>
+
+        </table>
+
+        <div class="final-box">
+
+          <div class="final-grid">
+
+            <div class="final-item">
+
+              <div class="final-label">
+                FINAL PRICE
+              </div>
+
+              <div class="final-value">
+                ₹${finalPrice}
+              </div>
+
+            </div>
+
+            <div class="final-item">
+
+              <div class="final-label">
+                FINAL MRP
+              </div>
+
+              <div class="final-value">
+                ₹${finalMRP}
+              </div>
+
+            </div>
+
+            <div class="final-item">
+
+              <div class="final-label">
+                FINAL GST
+              </div>
+
+              <div class="final-value">
+                ${finalGST}%
+              </div>
+
+            </div>
+
+          </div>
+
+          <div class="final-status">
+
+            ${
+              finalStatus === "CLEAN"
+              ?
+              "✅ CLEAN"
+
+              :
+
+              finalStatus ===
+              "AUTO_APPROVED"
+              ?
+              "🟦 AUTO APPROVED"
+
+              :
+
+              finalStatus ===
+              "REVIEWED"
+              ?
+              "🟪 REVIEWED"
+
+              :
+
+              "🟧 NEEDS REVIEW"
+            }
+
+          </div>
+
+        </div>
+
+        <button
+        class="save-btn"
+        onclick="saveEdit(${r.rowNumber})">
+
+          SAVE
+
+        </button>
+
+      </div>
+
+    `;
+
+  });
+
+  document
+    .getElementById("poContent")
+    .innerHTML = `
+
+      <div class="section">
+
+        <div class="section-header">
+
+          <div class="section-title">
+            ${po}
+          </div>
+
+          <button
+          class="export-btn"
+          onclick="exportPO('${po}')">
+
+            EXPORT PO
+
+          </button>
+
+        </div>
+
+        <div class="po-grid">
+
+          ${html}
+
+        </div>
+
+      </div>
+
+    `;
+
+}
+
+/* ========================= */
+
+async function saveEdit(rowNumber){
+
+  const PO_PRICE =
+    document.getElementById(
+      `po_price_${rowNumber}`
+    ).value;
+
+  const PO_MRP =
+    document.getElementById(
+      `po_mrp_${rowNumber}`
+    ).value;
+
+  const PO_GST =
+    document.getElementById(
+      `po_gst_${rowNumber}`
+    ).value;
+
+  const UC_PRICE =
+    document.getElementById(
+      `price_${rowNumber}`
+    ).value;
+
+  const UC_GST =
+    document.getElementById(
+      `gst_${rowNumber}`
+    ).value;
+
+  const UC_MRP =
+    document.getElementById(
+      `mrp_${rowNumber}`
+    ).value;
+
+  await fetch(API_URL, {
+
+    method:"POST",
+
+    body: JSON.stringify({
+
+      rowNumber,
+
+      PO_PRICE,
+      PO_MRP,
+      PO_GST,
+
+      UC_PRICE,
+      UC_GST,
+      UC_MRP,
+
+      REVIEWED:"YES"
+
+    })
+
+  });
+
+  alert("Updated Successfully");
+
+  location.reload();
+
+}
+
+/* ========================= */
+
+function exportPO(po){
+
+  exportCSV(
+    GLOBAL_GROUPED[po],
+    po + ".csv"
+  );
+
+}
+
+function exportAll(){
+
+  exportCSV(
+    GLOBAL_DATA,
+    "ALL_POS.csv"
+  );
+
+}
+
+function exportCSV(rows, filename){
+
+  let csvRows = [];
+
+  csvRows.push([
+
+    "PoNumber",
+    "SKU_ID",
+
+    "PO_PRICE",
+    "UC_PRICE",
+    "FINAL_PRICE",
+
+    "PO_MRP",
+    "UC_MRP",
+    "FINAL_MRP",
+
+    "PO_GST",
+    "UC_GST",
+    "FINAL_GST",
+
+    "FINAL_STATUS"
+
+  ]);
+
+  rows.forEach(r => {
+
+    const poPrice =
+      Number(r.PO_PRICE || 0);
+
+    const ucPrice =
+      Number(r.UC_PRICE || 0);
+
+    const poMRP =
+      Number(r.PO_MRP || 0);
+
+    const ucMRP =
+      Number(r.UC_MRP || 0);
+
+    const poGST =
+      Number(r.PO_GST || 0);
+
+    const ucGST =
+      Number(r.UC_GST || 0);
+
+    const priceDiff =
+      Math.abs(poPrice - ucPrice);
+
+    const finalPrice =
+      priceDiff <= 1
+      ? poPrice
+      : ucPrice;
+
+    const finalMRP =
+      poMRP === ucMRP
+      ? poMRP
+      : ucMRP;
+
+    const finalGST =
+      poGST === ucGST
+      ? poGST
+      : ucGST;
+
+    const finalStatus =
+      getLineStatus(r);
+
+    csvRows.push([
+
+      r.PoNumber,
+      r.SKU_ID,
+
+      poPrice,
+      ucPrice,
+      finalPrice,
+
+      poMRP,
+      ucMRP,
+      finalMRP,
+
+      poGST,
+      ucGST,
+      finalGST,
+
+      finalStatus
+
+    ]);
+
+  });
+
+  let csvContent =
+    csvRows
+    .map(row =>
+      row.join(",")
+    )
+    .join("\n");
+
+  const blob =
+    new Blob(
+      [csvContent],
+      {
+        type:
+        "text/csv;charset=utf-8;"
+      }
+    );
+
+  const link =
+    document.createElement("a");
+
+  const url =
+    URL.createObjectURL(blob);
+
+  link.setAttribute(
+    "href",
+    url
+  );
+
+  link.setAttribute(
+    "download",
+    filename
+  );
+
+  document.body
+    .appendChild(link);
+
+  link.click();
+
+  document.body
+    .removeChild(link);
+
+}
+
 </script>
 
 </body>

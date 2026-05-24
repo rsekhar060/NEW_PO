@@ -4,7 +4,6 @@
 <head>
 
 <meta charset="UTF-8">
-
 <title>TP Dashboard</title>
 
 <style>
@@ -24,7 +23,7 @@ body{
   overflow:hidden;
 }
 
-/* ========================= */
+/* ======================= */
 
 .sidebar{
   width:320px;
@@ -64,8 +63,8 @@ body{
 }
 
 .po-lines{
-  margin-top:5px;
   color:#94a3b8;
+  margin-top:5px;
 }
 
 .status-dot{
@@ -76,7 +75,7 @@ body{
   margin-top:8px;
 }
 
-/* ========================= */
+/* ======================= */
 
 .main{
   flex:1;
@@ -99,7 +98,6 @@ body{
 .page-sub{
   color:#94a3b8;
   margin-top:8px;
-  font-size:28px;
 }
 
 .export-btn{
@@ -109,7 +107,6 @@ body{
   padding:14px 22px;
   border-radius:12px;
   cursor:pointer;
-  font-size:16px;
 }
 
 .summary-grid{
@@ -122,8 +119,8 @@ body{
 .summary-card{
   background:#0f172a;
   border:1px solid #1e293b;
-  border-radius:20px;
-  padding:26px;
+  border-radius:18px;
+  padding:24px;
   cursor:pointer;
 }
 
@@ -134,7 +131,7 @@ body{
 }
 
 .summary-value{
-  font-size:54px;
+  font-size:52px;
   font-weight:bold;
 }
 
@@ -154,7 +151,7 @@ body{
   color:#a855f7;
 }
 
-/* ========================= */
+/* ======================= */
 
 .section{
   margin-top:40px;
@@ -179,12 +176,12 @@ body{
   gap:24px;
 }
 
-/* ========================= */
+/* ======================= */
 
 .item-card{
   background:#0f172a;
   border:1px solid #1e293b;
-  border-radius:22px;
+  border-radius:20px;
   padding:28px;
 }
 
@@ -195,25 +192,23 @@ body{
 
 .item-sub{
   color:#94a3b8;
-  margin-top:8px;
-  font-size:18px;
+  margin-top:6px;
 }
 
 table{
   width:100%;
-  margin-top:26px;
+  margin-top:24px;
 }
 
 th{
   color:#94a3b8;
   text-align:left;
-  font-size:14px;
   padding-bottom:10px;
 }
 
 td{
   padding-bottom:22px;
-  font-size:20px;
+  font-size:18px;
   font-weight:bold;
 }
 
@@ -224,7 +219,7 @@ td{
   border:1px solid #334155;
   border-radius:12px;
   color:white;
-  font-size:20px;
+  font-size:18px;
 }
 
 .final-box{
@@ -254,7 +249,7 @@ td{
 
 .final-value{
   margin-top:8px;
-  font-size:26px;
+  font-size:24px;
   font-weight:bold;
 }
 
@@ -271,7 +266,7 @@ td{
   padding:14px 24px;
   border-radius:12px;
   cursor:pointer;
-  font-size:20px;
+  font-size:18px;
   margin-top:24px;
 }
 
@@ -315,7 +310,7 @@ const API_URL =
 let GLOBAL_DATA = [];
 let GLOBAL_GROUPED = {};
 
-/* ================================ */
+/* ========================= */
 
 fetch(API_URL)
 .then(res => res.json())
@@ -327,7 +322,7 @@ fetch(API_URL)
 
 });
 
-/* ================================ */
+/* ========================= */
 
 function getLineStatus(r){
 
@@ -386,7 +381,7 @@ function getLineStatus(r){
 
 }
 
-/* ================================ */
+/* ========================= */
 
 function getPOStatus(rows){
 
@@ -429,7 +424,7 @@ function getPOStatus(rows){
 
 }
 
-/* ================================ */
+/* ========================= */
 
 function buildDashboard(data){
 
@@ -581,7 +576,7 @@ function buildDashboard(data){
 
 }
 
-/* ================================ */
+/* ========================= */
 
 function filterPOs(type){
 
@@ -612,7 +607,7 @@ function filterPOs(type){
 
 }
 
-/* ================================ */
+/* ========================= */
 
 function addSidebarPO(
   po,
@@ -669,7 +664,7 @@ function addSidebarPO(
 
 }
 
-/* ================================ */
+/* ========================= */
 
 function renderPO(po){
 
@@ -703,21 +698,6 @@ function renderPO(po){
 
     const finalStatus =
       getLineStatus(r);
-
-    const finalPrice =
-      diff <= 1
-      ? poPrice
-      : ucPrice;
-
-    const finalMRP =
-      poMRP === ucMRP
-      ? poMRP
-      : ucMRP;
-
-    const finalGST =
-      poGST === ucGST
-      ? poGST
-      : ucGST;
 
     html += `
 
@@ -786,10 +766,8 @@ function renderPO(po){
             <td>
               ${
                 poMRP === ucMRP
-                ?
-                "✅ MATCH"
-                :
-                "❌ MISMATCH"
+                ? "✅ MATCH"
+                : "❌ MISMATCH"
               }
             </td>
 
@@ -820,10 +798,8 @@ function renderPO(po){
             <td>
               ${
                 poGST === ucGST
-                ?
-                "✅ MATCH"
-                :
-                "❌ MISMATCH"
+                ? "✅ MATCH"
+                : "❌ MISMATCH"
               }
             </td>
 
@@ -833,66 +809,21 @@ function renderPO(po){
 
         <div class="final-box">
 
-          <div class="final-grid">
-
-            <div class="final-item">
-
-              <div class="final-label">
-                FINAL PRICE
-              </div>
-
-              <div class="final-value">
-                ₹${finalPrice}
-              </div>
-
-            </div>
-
-            <div class="final-item">
-
-              <div class="final-label">
-                FINAL MRP
-              </div>
-
-              <div class="final-value">
-                ₹${finalMRP}
-              </div>
-
-            </div>
-
-            <div class="final-item">
-
-              <div class="final-label">
-                FINAL GST
-              </div>
-
-              <div class="final-value">
-                ${finalGST}%
-              </div>
-
-            </div>
-
-          </div>
-
           <div class="final-status">
 
             ${
               finalStatus === "CLEAN"
-              ?
-              "✅ CLEAN"
+              ? "✅ CLEAN"
 
               :
 
-              finalStatus ===
-              "AUTO_APPROVED"
-              ?
-              "🟦 AUTO APPROVED"
+              finalStatus === "AUTO_APPROVED"
+              ? "🟦 AUTO APPROVED"
 
               :
 
-              finalStatus ===
-              "REVIEWED"
-              ?
-              "🟪 REVIEWED"
+              finalStatus === "REVIEWED"
+              ? "🟪 REVIEWED"
 
               :
 
@@ -929,14 +860,6 @@ function renderPO(po){
           ${po}
         </div>
 
-        <button
-        class="export-btn"
-        onclick="exportPO('${po}')">
-
-          EXPORT PO
-
-        </button>
-
       </div>
 
       <div class="po-grid">
@@ -951,7 +874,7 @@ function renderPO(po){
 
 }
 
-/* ================================ */
+/* ========================= */
 
 async function saveEdit(rowNumber){
 
@@ -991,9 +914,10 @@ async function saveEdit(rowNumber){
 
       method:"POST",
 
+      mode:"no-cors",
+
       headers:{
-        "Content-Type":
-        "text/plain;charset=utf-8"
+        "Content-Type":"text/plain"
       },
 
       body: JSON.stringify({
@@ -1018,7 +942,11 @@ async function saveEdit(rowNumber){
       "Saved Successfully"
     );
 
-    location.reload();
+    setTimeout(() => {
+
+      location.reload();
+
+    },1000);
 
   }catch(error){
 
@@ -1029,152 +957,6 @@ async function saveEdit(rowNumber){
     );
 
   }
-
-}
-
-/* ================================ */
-
-function exportPO(po){
-
-  exportCSV(
-    GLOBAL_GROUPED[po],
-    po + ".csv"
-  );
-
-}
-
-function exportAll(){
-
-  exportCSV(
-    GLOBAL_DATA,
-    "ALL_POS.csv"
-  );
-
-}
-
-/* ================================ */
-
-function exportCSV(rows, filename){
-
-  let csvRows = [];
-
-  csvRows.push([
-
-    "PoNumber",
-    "SKU_ID",
-
-    "PO_PRICE",
-    "UC_PRICE",
-    "FINAL_PRICE",
-
-    "PO_MRP",
-    "UC_MRP",
-    "FINAL_MRP",
-
-    "PO_GST",
-    "UC_GST",
-    "FINAL_GST",
-
-    "FINAL_STATUS"
-
-  ]);
-
-  rows.forEach(r => {
-
-    const poPrice =
-      Number(r.PO_PRICE || 0);
-
-    const ucPrice =
-      Number(r.UC_PRICE || 0);
-
-    const poMRP =
-      Number(r.PO_MRP || 0);
-
-    const ucMRP =
-      Number(r.UC_MRP || 0);
-
-    const poGST =
-      Number(r.PO_GST || 0);
-
-    const ucGST =
-      Number(r.UC_GST || 0);
-
-    const diff =
-      Math.abs(poPrice - ucPrice);
-
-    const finalPrice =
-      diff <= 1
-      ? poPrice
-      : ucPrice;
-
-    const finalMRP =
-      poMRP === ucMRP
-      ? poMRP
-      : ucMRP;
-
-    const finalGST =
-      poGST === ucGST
-      ? poGST
-      : ucGST;
-
-    let finalStatus =
-      getLineStatus(r);
-
-    if(r.REVIEWED === "YES"){
-      finalStatus = "REVIEWED";
-    }
-
-    csvRows.push([
-
-      r.PoNumber,
-      r.SKU_ID,
-
-      poPrice,
-      ucPrice,
-      finalPrice,
-
-      poMRP,
-      ucMRP,
-      finalMRP,
-
-      poGST,
-      ucGST,
-      finalGST,
-
-      finalStatus
-
-    ]);
-
-  });
-
-  let csvContent =
-    csvRows
-    .map(e => e.join(","))
-    .join("\n");
-
-  const blob =
-    new Blob(
-      [csvContent],
-      {
-        type:
-        "text/csv;charset=utf-8;"
-      }
-    );
-
-  const link =
-    document.createElement("a");
-
-  link.href =
-    URL.createObjectURL(blob);
-
-  link.download =
-    filename;
-
-  document.body.appendChild(link);
-
-  link.click();
-
-  document.body.removeChild(link);
 
 }
 

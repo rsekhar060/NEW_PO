@@ -90,7 +90,7 @@ body{
   padding:30px;
 }
 
-/* TOP */
+/* HEADER */
 
 .top-header{
   display:flex;
@@ -182,10 +182,6 @@ body{
   font-weight:bold;
 }
 
-.section-count{
-  color:#9ca3af;
-}
-
 /* GRID */
 
 .po-grid{
@@ -227,12 +223,23 @@ th{
 }
 
 td{
-  font-size:22px;
+  font-size:20px;
   font-weight:bold;
 }
 
 td,th{
   text-align:left;
+}
+
+/* INPUT */
+
+.edit-input{
+  width:120px;
+  padding:10px;
+  background:#0b0f17;
+  border:1px solid #374151;
+  border-radius:8px;
+  color:white;
 }
 
 /* BADGES */
@@ -261,6 +268,8 @@ td,th{
   color:#3b82f6;
 }
 
+/* REASON */
+
 .reason{
   margin-top:16px;
   padding:12px;
@@ -270,40 +279,25 @@ td,th{
   color:#d1d5db;
 }
 
+/* SAVE BUTTON */
+
+.save-btn{
+  margin-top:18px;
+  background:#2563eb;
+  border:none;
+  color:white;
+  padding:10px 18px;
+  border-radius:8px;
+  cursor:pointer;
+}
+
+.save-btn:hover{
+  background:#1d4ed8;
+}
+
 .empty{
   color:#9ca3af;
   padding:20px;
-}
-
-/* MOBILE */
-
-@media(max-width:1200px){
-
-  .summary-grid{
-    grid-template-columns:repeat(2,1fr);
-  }
-
-}
-
-@media(max-width:800px){
-
-  body{
-    flex-direction:column;
-  }
-
-  .sidebar{
-    width:100%;
-    height:250px;
-  }
-
-  .summary-grid{
-    grid-template-columns:1fr;
-  }
-
-  .po-grid{
-    grid-template-columns:1fr;
-  }
-
 }
 
 </style>
@@ -344,23 +338,17 @@ td,th{
 
 <script>
 
-/* =========================================
-   APPS SCRIPT URL
-========================================= */
+/* ========================================= */
 
 const API_URL =
-"https://script.google.com/macros/s/AKfycbwn45en_PUwL6kVHWQS3rg6zPMcDVMaVN32qlTQMtpWcGie_UjARb2I-t9XTSMQfCwm/exec";
+"https://script.google.com/macros/s/AKfycbzIdMrvue0iLwzRNCJ-fF4f_haVsUBNHIyIakl77XP66RG84yNZPoEIPgB1NwmMprzH/exec";
 
-/* =========================================
-   GLOBALS
-========================================= */
+/* ========================================= */
 
 let GLOBAL_DATA = [];
 let GLOBAL_GROUPED = {};
 
-/* =========================================
-   FETCH DATA
-========================================= */
+/* ========================================= */
 
 fetch(API_URL)
 .then(res => res.json())
@@ -372,9 +360,7 @@ fetch(API_URL)
 
 });
 
-/* =========================================
-   BUILD DASHBOARD
-========================================= */
+/* ========================================= */
 
 function buildDashboard(data){
 
@@ -541,9 +527,7 @@ function buildDashboard(data){
 
 }
 
-/* =========================================
-   SIDEBAR
-========================================= */
+/* ========================================= */
 
 function addSidebarPO(
   po,
@@ -602,9 +586,7 @@ function addSidebarPO(
 
 }
 
-/* =========================================
-   RENDER PO
-========================================= */
+/* ========================================= */
 
 function renderPO(po){
 
@@ -686,17 +668,27 @@ function renderPO(po){
 
           <tr>
 
-            <th>PO TP</th>
-            <th>UC TP</th>
+            <th>PO_PRICE</th>
+            <th>UC_PRICE</th>
             <th>DIFF</th>
 
           </tr>
 
           <tr>
 
-            <td>₹${poPrice}</td>
+            <td>
+              ₹${poPrice}
+            </td>
 
-            <td>₹${ucPrice}</td>
+            <td>
+
+              <input
+                id="price_${r.rowNumber}"
+                class="edit-input"
+                value="${ucPrice}"
+              >
+
+            </td>
 
             <td>
               ₹${diff.toFixed(2)}
@@ -705,6 +697,35 @@ function renderPO(po){
           </tr>
 
         </table>
+
+        <br>
+
+        <input
+          id="mrp_${r.rowNumber}"
+          class="edit-input"
+          value="${r.UC_MRP}"
+          placeholder="UC_MRP"
+        >
+
+        <input
+          id="gst_${r.rowNumber}"
+          class="edit-input"
+          value="${r.UC_GST}"
+          placeholder="UC_GST"
+        >
+
+        <br>
+
+        <button
+          class="save-btn"
+          onclick="saveEdit(${r.rowNumber})"
+        >
+
+          SAVE
+
+        </button>
+
+        <br>
 
         ${badge}
 
@@ -810,9 +831,47 @@ function renderPO(po){
 
 }
 
-/* =========================================
-   EXPORT SINGLE PO
-========================================= */
+/* ========================================= */
+
+async function saveEdit(rowNumber){
+
+  const UC_PRICE =
+    document.getElementById(
+      `price_${rowNumber}`
+    ).value;
+
+  const UC_GST =
+    document.getElementById(
+      `gst_${rowNumber}`
+    ).value;
+
+  const UC_MRP =
+    document.getElementById(
+      `mrp_${rowNumber}`
+    ).value;
+
+  await fetch(API_URL, {
+
+    method:"POST",
+
+    body: JSON.stringify({
+
+      rowNumber,
+      UC_PRICE,
+      UC_GST,
+      UC_MRP
+
+    })
+
+  });
+
+  alert("Updated Successfully");
+
+  location.reload();
+
+}
+
+/* ========================================= */
 
 function exportPO(po){
 
@@ -854,9 +913,7 @@ ${status}\n`;
 
 }
 
-/* =========================================
-   EXPORT ALL
-========================================= */
+/* ========================================= */
 
 function exportAll(){
 
@@ -895,9 +952,7 @@ ${status}\n`;
 
 }
 
-/* =========================================
-   DOWNLOAD CSV
-========================================= */
+/* ========================================= */
 
 function downloadCSV(csv, filename){
 

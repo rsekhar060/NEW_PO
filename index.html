@@ -295,8 +295,6 @@ td,th{
 
 <body>
 
-<!-- SIDEBAR -->
-
 <div class="sidebar">
 
   <div class="sidebar-header">
@@ -315,8 +313,6 @@ td,th{
 
 </div>
 
-<!-- MAIN -->
-
 <div class="main">
 
   <div id="topDashboard"></div>
@@ -328,12 +324,12 @@ td,th{
 <script>
 
 const API_URL =
-"https://script.google.com/macros/s/AKfycbzwlqMdL9SWpvzIimTRmGnl4Bvf38XaVlqpTfuF9-GJirHxjbggfc14hcG4IG1cPQk_/exec";
+"https://script.google.com/macros/s/AKfycbx3f0u4g7MQnphRX22C5VHpersJN8QPG9pfS4g3pBOaMDf1EHv2cu_6vRe3iV5VdHyY/exec";
 
 let GLOBAL_DATA = [];
 let GLOBAL_GROUPED = {};
 
-/* ======================================= */
+/* ===================================== */
 
 fetch(API_URL)
 .then(res => res.json())
@@ -345,7 +341,7 @@ fetch(API_URL)
 
 });
 
-/* ======================================= */
+/* ===================================== */
 
 function buildDashboard(data){
 
@@ -468,63 +464,48 @@ function buildDashboard(data){
     <div class="summary-grid">
 
       <div class="summary-card">
-
         <div class="summary-title">
           TOTAL POs
         </div>
-
         <div class="summary-value">
           ${Object.keys(grouped).length}
         </div>
-
       </div>
 
       <div class="summary-card">
-
         <div class="summary-title">
           PO LINES
         </div>
-
         <div class="summary-value">
           ${data.length}
         </div>
-
       </div>
 
       <div class="summary-card">
-
         <div class="summary-title">
           CLEAN
         </div>
-
         <div class="summary-value green">
           ${cleanPOs}
         </div>
-
       </div>
 
       <div class="summary-card">
-
         <div class="summary-title">
           AUTO APPROVED
         </div>
-
         <div class="summary-value blue">
           ${autoPOs}
         </div>
-
       </div>
 
       <div class="summary-card">
-
         <div class="summary-title">
           NEEDS REVIEW
         </div>
-
         <div class="summary-value orange">
           ${reviewPOs}
         </div>
-
       </div>
 
     </div>
@@ -538,7 +519,7 @@ function buildDashboard(data){
 
 }
 
-/* ======================================= */
+/* ===================================== */
 
 function addSidebarPO(
   po,
@@ -591,7 +572,7 @@ function addSidebarPO(
 
 }
 
-/* ======================================= */
+/* ===================================== */
 
 function renderPO(po){
 
@@ -712,7 +693,13 @@ function renderPO(po){
           <tr>
 
             <td>
-              ₹${poPrice}
+
+              <input
+                id="po_price_${r.rowNumber}"
+                class="edit-input"
+                value="${poPrice}"
+              >
+
             </td>
 
             <td>
@@ -742,7 +729,13 @@ function renderPO(po){
           <tr>
 
             <td>
-              ${poMRP}
+
+              <input
+                id="po_mrp_${r.rowNumber}"
+                class="edit-input"
+                value="${poMRP}"
+              >
+
             </td>
 
             <td>
@@ -780,7 +773,13 @@ function renderPO(po){
           <tr>
 
             <td>
-              ${poGST}
+
+              <input
+                id="po_gst_${r.rowNumber}"
+                class="edit-input"
+                value="${poGST}"
+              >
+
             </td>
 
             <td>
@@ -868,11 +867,9 @@ function renderPO(po){
     <div class="section">
 
       <div class="section-header">
-
         <div class="section-title">
           Needs Review
         </div>
-
       </div>
 
       <div class="po-grid">
@@ -886,11 +883,9 @@ function renderPO(po){
     <div class="section">
 
       <div class="section-header">
-
         <div class="section-title">
           Auto Approved
         </div>
-
       </div>
 
       <div class="po-grid">
@@ -904,11 +899,9 @@ function renderPO(po){
     <div class="section">
 
       <div class="section-header">
-
         <div class="section-title">
           Clean
         </div>
-
       </div>
 
       <div class="po-grid">
@@ -923,9 +916,24 @@ function renderPO(po){
 
 }
 
-/* ======================================= */
+/* ===================================== */
 
 async function saveEdit(rowNumber){
+
+  const PO_PRICE =
+    document.getElementById(
+      `po_price_${rowNumber}`
+    ).value;
+
+  const PO_MRP =
+    document.getElementById(
+      `po_mrp_${rowNumber}`
+    ).value;
+
+  const PO_GST =
+    document.getElementById(
+      `po_gst_${rowNumber}`
+    ).value;
 
   const UC_PRICE =
     document.getElementById(
@@ -949,6 +957,11 @@ async function saveEdit(rowNumber){
     body: JSON.stringify({
 
       rowNumber,
+
+      PO_PRICE,
+      PO_MRP,
+      PO_GST,
+
       UC_PRICE,
       UC_GST,
       UC_MRP
@@ -963,138 +976,145 @@ async function saveEdit(rowNumber){
 
 }
 
-/* ======================================= */
+/* ===================================== */
 
 function exportPO(po){
 
   const rows =
     GLOBAL_GROUPED[po];
 
-  let csv =
-`PoNumber,SKU_ID,PO_PRICE,UC_PRICE,PO_MRP,UC_MRP,PO_GST,UC_GST,STATUS\n`;
-
-  rows.forEach(r => {
-
-    const priceDiff =
-      Math.abs(
-        Number(r.PO_PRICE || 0)
-        -
-        Number(r.UC_PRICE || 0)
-      );
-
-    const mrpMatch =
-      Number(r.PO_MRP || 0)
-      ===
-      Number(r.UC_MRP || 0);
-
-    const gstMatch =
-      Number(r.PO_GST || 0)
-      ===
-      Number(r.UC_GST || 0);
-
-    let status = "REVIEW";
-
-    if(
-      priceDiff === 0
-      &&
-      mrpMatch
-      &&
-      gstMatch
-    ){
-      status = "CLEAN";
-    }
-    else if(
-      priceDiff <= 1
-      &&
-      mrpMatch
-      &&
-      gstMatch
-    ){
-      status = "AUTO_APPROVED";
-    }
-
-    csv +=
-`${r.PoNumber},
-${r.SKU_ID},
-${r.PO_PRICE},
-${r.UC_PRICE},
-${r.PO_MRP},
-${r.UC_MRP},
-${r.PO_GST},
-${r.UC_GST},
-${status}\n`;
-
-  });
-
-  downloadCSV(csv, po + ".csv");
+  exportCSV(rows, po + ".csv");
 
 }
 
-/* ======================================= */
+/* ===================================== */
 
 function exportAll(){
 
-  let csv =
-`PoNumber,SKU_ID,PO_PRICE,UC_PRICE,PO_MRP,UC_MRP,PO_GST,UC_GST,STATUS\n`;
+  exportCSV(
+    GLOBAL_DATA,
+    "ALL_POS.csv"
+  );
 
-  GLOBAL_DATA.forEach(r => {
+}
 
-    const priceDiff =
-      Math.abs(
-        Number(r.PO_PRICE || 0)
-        -
-        Number(r.UC_PRICE || 0)
-      );
+/* ===================================== */
 
-    const mrpMatch =
-      Number(r.PO_MRP || 0)
-      ===
+function exportCSV(rows, filename){
+
+  let csvRows = [];
+
+  csvRows.push([
+
+    "PoNumber",
+    "SKU_ID",
+
+    "PO_PRICE",
+    "UC_PRICE",
+    "PRICE_DIFF",
+
+    "PO_MRP",
+    "UC_MRP",
+    "MRP_STATUS",
+
+    "PO_GST",
+    "UC_GST",
+    "GST_STATUS",
+
+    "FINAL_STATUS"
+
+  ]);
+
+  rows.forEach(r => {
+
+    const poPrice =
+      Number(r.PO_PRICE || 0);
+
+    const ucPrice =
+      Number(r.UC_PRICE || 0);
+
+    const poMRP =
+      Number(r.PO_MRP || 0);
+
+    const ucMRP =
       Number(r.UC_MRP || 0);
 
-    const gstMatch =
-      Number(r.PO_GST || 0)
-      ===
+    const poGST =
+      Number(r.PO_GST || 0);
+
+    const ucGST =
       Number(r.UC_GST || 0);
 
-    let status = "REVIEW";
+    const priceDiff =
+      Math.abs(poPrice - ucPrice);
+
+    const mrpStatus =
+      poMRP === ucMRP
+      ? "MATCH"
+      : "MISMATCH";
+
+    const gstStatus =
+      poGST === ucGST
+      ? "MATCH"
+      : "MISMATCH";
+
+    let finalStatus = "REVIEW";
 
     if(
       priceDiff === 0
       &&
-      mrpMatch
+      mrpStatus === "MATCH"
       &&
-      gstMatch
+      gstStatus === "MATCH"
     ){
-      status = "CLEAN";
+      finalStatus = "CLEAN";
     }
     else if(
       priceDiff <= 1
       &&
-      mrpMatch
+      mrpStatus === "MATCH"
       &&
-      gstMatch
+      gstStatus === "MATCH"
     ){
-      status = "AUTO_APPROVED";
+      finalStatus = "AUTO_APPROVED";
     }
 
-    csv +=
-`${r.PoNumber},
-${r.SKU_ID},
-${r.PO_PRICE},
-${r.UC_PRICE},
-${r.PO_MRP},
-${r.UC_MRP},
-${r.PO_GST},
-${r.UC_GST},
-${status}\n`;
+    csvRows.push([
+
+      r.PoNumber,
+      r.SKU_ID,
+
+      poPrice,
+      ucPrice,
+      priceDiff.toFixed(2),
+
+      poMRP,
+      ucMRP,
+      mrpStatus,
+
+      poGST,
+      ucGST,
+      gstStatus,
+
+      finalStatus
+
+    ]);
 
   });
 
-  downloadCSV(csv, "ALL_POS.csv");
+  const csvContent =
+    csvRows
+    .map(e => e.join(","))
+    .join("\n");
+
+  downloadCSV(
+    csvContent,
+    filename
+  );
 
 }
 
-/* ======================================= */
+/* ===================================== */
 
 function downloadCSV(csv, filename){
 

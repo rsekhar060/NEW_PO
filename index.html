@@ -99,7 +99,7 @@ body{
 
 .summary-grid{
   display:grid;
-  grid-template-columns:repeat(5,1fr);
+  grid-template-columns:repeat(6,1fr);
   gap:18px;
   margin-bottom:40px;
 }
@@ -133,6 +133,10 @@ body{
 
 .orange{
   color:#ff8a00;
+}
+
+.purple{
+  color:#a855f7;
 }
 
 .section{
@@ -247,18 +251,9 @@ td{
   color:#ff8a00;
 }
 
-.reason{
-  margin-top:16px;
-  padding:12px;
-  border-radius:10px;
-  background:#1f2937;
-  color:#d1d5db;
-  font-size:13px;
-}
-
-.empty{
-  color:#9ca3af;
-  padding:20px;
+.reviewed-badge{
+  background:#3b0764;
+  color:#c084fc;
 }
 
 .final-box{
@@ -349,9 +344,11 @@ fetch(API_URL)
 
 });
 
-/* ===================================== */
-
 function getLineStatus(r){
+
+  if(r.REVIEWED === "YES"){
+    return "REVIEWED";
+  }
 
   const poPrice =
     Number(r.PO_PRICE || 0);
@@ -404,7 +401,46 @@ function getLineStatus(r){
 
 }
 
-/* ===================================== */
+function getPOStatus(rows){
+
+  let hasReview = false;
+  let hasAuto = false;
+  let hasReviewed = false;
+
+  rows.forEach(r => {
+
+    const status =
+      getLineStatus(r);
+
+    if(status === "NEEDS_REVIEW"){
+      hasReview = true;
+    }
+
+    if(status === "AUTO_APPROVED"){
+      hasAuto = true;
+    }
+
+    if(status === "REVIEWED"){
+      hasReviewed = true;
+    }
+
+  });
+
+  if(hasReview){
+    return "NEEDS_REVIEW";
+  }
+
+  if(hasReviewed){
+    return "REVIEWED";
+  }
+
+  if(hasAuto){
+    return "AUTO_APPROVED";
+  }
+
+  return "CLEAN";
+
+}
 
 function buildDashboard(data){
 
@@ -427,13 +463,12 @@ function buildDashboard(data){
   let cleanPOs = 0;
   let autoPOs = 0;
   let reviewPOs = 0;
+  let reviewedPOs = 0;
 
   Object.keys(grouped).forEach(po => {
 
-    const rows = grouped[po];
-
-    let status =
-      getPOStatus(rows);
+    const status =
+      getPOStatus(grouped[po]);
 
     if(status === "CLEAN"){
       cleanPOs++;
@@ -445,6 +480,10 @@ function buildDashboard(data){
 
     if(status === "NEEDS_REVIEW"){
       reviewPOs++;
+    }
+
+    if(status === "REVIEWED"){
+      reviewedPOs++;
     }
 
   });
@@ -492,18 +531,6 @@ function buildDashboard(data){
 
       </div>
 
-      <div class="summary-card">
-
-        <div class="summary-title">
-          PO LINES
-        </div>
-
-        <div class="summary-value">
-          ${data.length}
-        </div>
-
-      </div>
-
       <div class="summary-card"
       onclick="filterPOs('CLEAN')">
 
@@ -543,6 +570,31 @@ function buildDashboard(data){
 
       </div>
 
+      <div class="summary-card"
+      onclick="filterPOs('REVIEWED')">
+
+        <div class="summary-title">
+          REVIEWED
+        </div>
+
+        <div class="summary-value purple">
+          ${reviewedPOs}
+        </div>
+
+      </div>
+
+      <div class="summary-card">
+
+        <div class="summary-title">
+          PO LINES
+        </div>
+
+        <div class="summary-value">
+          ${data.length}
+        </div>
+
+      </div>
+
     </div>
 
   `;
@@ -550,42 +602,6 @@ function buildDashboard(data){
   filterPOs("ALL");
 
 }
-
-/* ===================================== */
-
-function getPOStatus(rows){
-
-  let hasReview = false;
-  let hasAuto = false;
-
-  rows.forEach(r => {
-
-    const status =
-      getLineStatus(r);
-
-    if(status === "NEEDS_REVIEW"){
-      hasReview = true;
-    }
-
-    if(status === "AUTO_APPROVED"){
-      hasAuto = true;
-    }
-
-  });
-
-  if(hasReview){
-    return "NEEDS_REVIEW";
-  }
-
-  if(hasAuto){
-    return "AUTO_APPROVED";
-  }
-
-  return "CLEAN";
-
-}
-
-/* ===================================== */
 
 function filterPOs(type){
 
@@ -602,17 +618,7 @@ function filterPOs(type){
     const status =
       getPOStatus(rows);
 
-    let show = false;
-
-    if(type === "ALL"){
-      show = true;
-    }
-
-    if(type === status){
-      show = true;
-    }
-
-    if(show){
+    if(type === "ALL" || type === status){
 
       addSidebarPO(
         po,
@@ -625,8 +631,6 @@ function filterPOs(type){
   });
 
 }
-
-/* ===================================== */
 
 function addSidebarPO(
   po,
@@ -642,6 +646,10 @@ function addSidebarPO(
 
   if(status === "NEEDS_REVIEW"){
     color = "#ff8a00";
+  }
+
+  if(status === "REVIEWED"){
+    color = "#a855f7";
   }
 
   const div =
@@ -678,601 +686,7 @@ function addSidebarPO(
     .appendChild(div);
 
 }
-
-/* ===================================== */
-
-function renderPO(po){
-
-  const rows =
-    GLOBAL_GROUPED[po];
-
-  let reviewHTML = "";
-  let autoHTML = "";
-  let cleanHTML = "";
-
-  rows.forEach(r => {
-
-    const poPrice =
-      Number(r.PO_PRICE || 0);
-
-    const ucPrice =
-      Number(r.UC_PRICE || 0);
-
-    const poMRP =
-      Number(r.PO_MRP || 0);
-
-    const ucMRP =
-      Number(r.UC_MRP || 0);
-
-    const poGST =
-      Number(r.PO_GST || 0);
-
-    const ucGST =
-      Number(r.UC_GST || 0);
-
-    const priceDiff =
-      Math.abs(poPrice - ucPrice);
-
-    const mrpMatch =
-      poMRP === ucMRP;
-
-    const gstMatch =
-      poGST === ucGST;
-
-    const finalStatus =
-      getLineStatus(r);
-
-    const finalPrice =
-      priceDiff <= 1
-      ? poPrice
-      : ucPrice;
-
-    const finalMRP =
-      mrpMatch
-      ? poMRP
-      : ucMRP;
-
-    const finalGST =
-      gstMatch
-      ? poGST
-      : ucGST;
-
-    let badge = "";
-
-    if(finalStatus === "CLEAN"){
-
-      badge =
-      `<span class="badge clean-badge">
-        CLEAN
-      </span>`;
-
-    }
-
-    else if(
-      finalStatus ===
-      "AUTO_APPROVED"
-    ){
-
-      badge =
-      `<span class="badge auto-badge">
-        AUTO APPROVED
-      </span>`;
-
-    }
-
-    else{
-
-      badge =
-      `<span class="badge review-badge">
-        NEEDS REVIEW
-      </span>`;
-
-    }
-
-    const card = `
-
-      <div class="item-card">
-
-        <div class="item-title">
-          ${r.SKU_ID}
-        </div>
-
-        <div class="item-sub">
-          PO ${po}
-        </div>
-
-        <table>
-
-          <tr>
-            <th>PO_PRICE</th>
-            <th>UC_PRICE</th>
-            <th>DIFF</th>
-          </tr>
-
-          <tr>
-
-            <td>
-              <input
-              id="po_price_${r.rowNumber}"
-              class="edit-input"
-              value="${poPrice}">
-            </td>
-
-            <td>
-              <input
-              id="price_${r.rowNumber}"
-              class="edit-input"
-              value="${ucPrice}">
-            </td>
-
-            <td>
-              ₹${priceDiff.toFixed(2)}
-            </td>
-
-          </tr>
-
-          <tr>
-            <th>PO_MRP</th>
-            <th>UC_MRP</th>
-            <th>STATUS</th>
-          </tr>
-
-          <tr>
-
-            <td>
-              <input
-              id="po_mrp_${r.rowNumber}"
-              class="edit-input"
-              value="${poMRP}">
-            </td>
-
-            <td>
-              <input
-              id="mrp_${r.rowNumber}"
-              class="edit-input"
-              value="${ucMRP}">
-            </td>
-
-            <td>
-              ${
-                mrpMatch
-                ?
-                "✅ MATCH"
-                :
-                "❌ MISMATCH"
-              }
-            </td>
-
-          </tr>
-
-          <tr>
-            <th>PO_GST</th>
-            <th>UC_GST</th>
-            <th>STATUS</th>
-          </tr>
-
-          <tr>
-
-            <td>
-              <input
-              id="po_gst_${r.rowNumber}"
-              class="edit-input"
-              value="${poGST}">
-            </td>
-
-            <td>
-              <input
-              id="gst_${r.rowNumber}"
-              class="edit-input"
-              value="${ucGST}">
-            </td>
-
-            <td>
-              ${
-                gstMatch
-                ?
-                "✅ MATCH"
-                :
-                "❌ MISMATCH"
-              }
-            </td>
-
-          </tr>
-
-        </table>
-
-        <div class="final-box">
-
-          <div class="final-grid">
-
-            <div class="final-item">
-
-              <div class="final-label">
-                FINAL PRICE
-              </div>
-
-              <div class="final-value">
-                ₹${finalPrice}
-              </div>
-
-            </div>
-
-            <div class="final-item">
-
-              <div class="final-label">
-                FINAL MRP
-              </div>
-
-              <div class="final-value">
-                ₹${finalMRP}
-              </div>
-
-            </div>
-
-            <div class="final-item">
-
-              <div class="final-label">
-                FINAL GST
-              </div>
-
-              <div class="final-value">
-                ${finalGST}%
-              </div>
-
-            </div>
-
-          </div>
-
-          <div class="final-status">
-
-            ${
-              finalStatus === "CLEAN"
-              ?
-              "✅ CLEAN"
-              :
-              finalStatus ===
-              "AUTO_APPROVED"
-              ?
-              "🟦 AUTO APPROVED"
-              :
-              "🟧 NEEDS REVIEW"
-            }
-
-          </div>
-
-        </div>
-
-        <button
-        class="save-btn"
-        onclick="saveEdit(${r.rowNumber})">
-
-          SAVE
-
-        </button>
-
-        <br>
-
-        ${badge}
-
-      </div>
-
-    `;
-
-    if(finalStatus === "CLEAN"){
-      cleanHTML += card;
-    }
-
-    if(
-      finalStatus ===
-      "AUTO_APPROVED"
-    ){
-      autoHTML += card;
-    }
-
-    if(
-      finalStatus ===
-      "NEEDS_REVIEW"
-    ){
-      reviewHTML += card;
-    }
-
-  });
-
-  document.getElementById(
-    "poContent"
-  ).innerHTML = `
-
-    <div class="section">
-
-      <div class="section-header">
-
-        <div class="section-title">
-          ${po}
-        </div>
-
-        <button
-        class="export-btn"
-        onclick="exportPO('${po}')">
-
-          EXPORT PO
-
-        </button>
-
-      </div>
-
-    </div>
-
-    <div class="section">
-
-      <div class="section-title">
-        Needs Review
-      </div>
-
-      <div class="po-grid">
-
-        ${
-          reviewHTML
-          ||
-          '<div class="empty">No review lines</div>'
-        }
-
-      </div>
-
-    </div>
-
-    <div class="section">
-
-      <div class="section-title">
-        Auto Approved
-      </div>
-
-      <div class="po-grid">
-
-        ${
-          autoHTML
-          ||
-          '<div class="empty">No auto approved lines</div>'
-        }
-
-      </div>
-
-    </div>
-
-    <div class="section">
-
-      <div class="section-title">
-        Clean
-      </div>
-
-      <div class="po-grid">
-
-        ${
-          cleanHTML
-          ||
-          '<div class="empty">No clean lines</div>'
-        }
-
-      </div>
-
-    </div>
-
-  `;
-
-}
-
-/* ===================================== */
-
-async function saveEdit(rowNumber){
-
-  const PO_PRICE =
-    document.getElementById(
-      `po_price_${rowNumber}`
-    ).value;
-
-  const PO_MRP =
-    document.getElementById(
-      `po_mrp_${rowNumber}`
-    ).value;
-
-  const PO_GST =
-    document.getElementById(
-      `po_gst_${rowNumber}`
-    ).value;
-
-  const UC_PRICE =
-    document.getElementById(
-      `price_${rowNumber}`
-    ).value;
-
-  const UC_GST =
-    document.getElementById(
-      `gst_${rowNumber}`
-    ).value;
-
-  const UC_MRP =
-    document.getElementById(
-      `mrp_${rowNumber}`
-    ).value;
-
-  await fetch(API_URL, {
-
-    method:"POST",
-
-    body: JSON.stringify({
-
-      rowNumber,
-
-      PO_PRICE,
-      PO_MRP,
-      PO_GST,
-
-      UC_PRICE,
-      UC_GST,
-      UC_MRP
-
-    })
-
-  });
-
-  alert("Updated Successfully");
-
-  location.reload();
-
-}
-
-/* ===================================== */
-
-function exportPO(po){
-
-  exportCSV(
-    GLOBAL_GROUPED[po],
-    po + ".csv"
-  );
-
-}
-
-function exportAll(){
-
-  exportCSV(
-    GLOBAL_DATA,
-    "ALL_POS.csv"
-  );
-
-}
-
-function exportCSV(rows, filename){
-
-  let csvRows = [];
-
-  csvRows.push([
-
-    "PoNumber",
-    "SKU_ID",
-
-    "PO_PRICE",
-    "UC_PRICE",
-    "FINAL_PRICE",
-
-    "PO_MRP",
-    "UC_MRP",
-    "FINAL_MRP",
-
-    "PO_GST",
-    "UC_GST",
-    "FINAL_GST",
-
-    "FINAL_STATUS"
-
-  ]);
-
-  rows.forEach(r => {
-
-    const poPrice =
-      Number(r.PO_PRICE || 0);
-
-    const ucPrice =
-      Number(r.UC_PRICE || 0);
-
-    const poMRP =
-      Number(r.PO_MRP || 0);
-
-    const ucMRP =
-      Number(r.UC_MRP || 0);
-
-    const poGST =
-      Number(r.PO_GST || 0);
-
-    const ucGST =
-      Number(r.UC_GST || 0);
-
-    const priceDiff =
-      Math.abs(poPrice - ucPrice);
-
-    const finalPrice =
-      priceDiff <= 1
-      ? poPrice
-      : ucPrice;
-
-    const finalMRP =
-      poMRP === ucMRP
-      ? poMRP
-      : ucMRP;
-
-    const finalGST =
-      poGST === ucGST
-      ? poGST
-      : ucGST;
-
-    const finalStatus =
-      getLineStatus(r);
-
-    csvRows.push([
-
-      r.PoNumber,
-      r.SKU_ID,
-
-      poPrice,
-      ucPrice,
-      finalPrice,
-
-      poMRP,
-      ucMRP,
-      finalMRP,
-
-      poGST,
-      ucGST,
-      finalGST,
-
-      finalStatus
-
-    ]);
-
-  });
-
-  let csvContent =
-    csvRows
-    .map(row =>
-      row.join(",")
-    )
-    .join("\n");
-
-  const blob =
-    new Blob(
-      [csvContent],
-      {
-        type:
-        "text/csv;charset=utf-8;"
-      }
-    );
-
-  const link =
-    document.createElement("a");
-
-  const url =
-    URL.createObjectURL(blob);
-
-  link.setAttribute(
-    "href",
-    url
-  );
-
-  link.setAttribute(
-    "download",
-    filename
-  );
-
-  document.body
-    .appendChild(link);
-
-  link.click();
-
-  document.body
-    .removeChild(link);
-
-}
-
 </script>
 
 </body>
-
 </html>

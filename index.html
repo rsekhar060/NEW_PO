@@ -24,17 +24,15 @@ body{
   overflow:hidden;
 }
 
-/* SIDEBAR */
-
 .sidebar{
-  width:280px;
+  width:320px;
   background:#111827;
   border-right:1px solid #1f2937;
   overflow-y:auto;
 }
 
 .sidebar-header{
-  padding:20px;
+  padding:24px;
   border-bottom:1px solid #1f2937;
 }
 
@@ -45,11 +43,11 @@ body{
 
 .sidebar-sub{
   color:#9ca3af;
-  margin-top:5px;
+  margin-top:8px;
 }
 
 .po-item{
-  padding:18px;
+  padding:20px;
   border-bottom:1px solid #1f2937;
   cursor:pointer;
 }
@@ -76,15 +74,11 @@ body{
   margin-top:8px;
 }
 
-/* MAIN */
-
 .main{
   flex:1;
   overflow-y:auto;
   padding:30px;
 }
-
-/* TOP */
 
 .top-header{
   display:flex;
@@ -94,41 +88,14 @@ body{
 }
 
 .page-title{
-  font-size:36px;
+  font-size:40px;
   font-weight:bold;
 }
 
 .page-sub{
   color:#9ca3af;
-  margin-top:6px;
+  margin-top:8px;
 }
-
-/* BUTTON */
-
-.export-btn{
-  background:#111827;
-  border:1px solid #374151;
-  color:white;
-  padding:12px 20px;
-  border-radius:10px;
-  cursor:pointer;
-}
-
-.export-btn:hover{
-  background:#1f2937;
-}
-
-.save-btn{
-  background:#2563eb;
-  border:none;
-  color:white;
-  padding:10px 18px;
-  border-radius:8px;
-  cursor:pointer;
-  margin-top:18px;
-}
-
-/* SUMMARY */
 
 .summary-grid{
   display:grid;
@@ -152,7 +119,7 @@ body{
 }
 
 .summary-value{
-  font-size:40px;
+  font-size:42px;
   font-weight:bold;
 }
 
@@ -160,15 +127,13 @@ body{
   color:#22c55e;
 }
 
-.orange{
-  color:#ff8a00;
-}
-
 .blue{
   color:#3b82f6;
 }
 
-/* SECTION */
+.orange{
+  color:#ff8a00;
+}
 
 .section{
   margin-top:40px;
@@ -186,15 +151,12 @@ body{
   font-weight:bold;
 }
 
-/* GRID */
-
 .po-grid{
   display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(420px,1fr));
+  grid-template-columns:
+  repeat(auto-fill,minmax(420px,1fr));
   gap:20px;
 }
-
-/* CARD */
 
 .item-card{
   background:#111827;
@@ -213,8 +175,6 @@ body{
   margin-top:6px;
 }
 
-/* TABLE */
-
 table{
   width:100%;
   margin-top:20px;
@@ -226,18 +186,14 @@ th{
   font-size:12px;
   font-weight:normal;
   padding-bottom:10px;
+  text-align:left;
 }
 
 td{
   font-size:18px;
   font-weight:bold;
+  padding-bottom:14px;
 }
-
-td,th{
-  text-align:left;
-}
-
-/* INPUT */
 
 .edit-input{
   width:120px;
@@ -248,7 +204,24 @@ td,th{
   color:white;
 }
 
-/* BADGES */
+.save-btn{
+  background:#2563eb;
+  border:none;
+  color:white;
+  padding:10px 18px;
+  border-radius:8px;
+  cursor:pointer;
+  margin-top:18px;
+}
+
+.export-btn{
+  background:#111827;
+  border:1px solid #374151;
+  color:white;
+  padding:12px 20px;
+  border-radius:10px;
+  cursor:pointer;
+}
 
 .badge{
   display:inline-block;
@@ -264,25 +237,23 @@ td,th{
   color:#22c55e;
 }
 
-.review-badge{
-  background:#3b0a0a;
-  color:#ff8a00;
-}
-
 .auto-badge{
   background:#0a1f44;
   color:#3b82f6;
 }
 
-/* REASON */
+.review-badge{
+  background:#3b0a0a;
+  color:#ff8a00;
+}
 
 .reason{
   margin-top:16px;
   padding:12px;
   border-radius:10px;
-  font-size:13px;
   background:#1f2937;
   color:#d1d5db;
+  font-size:13px;
 }
 
 .empty{
@@ -325,11 +296,10 @@ td,th{
 <script>
 
 const API_URL =
-"https://script.google.com/macros/s/AKfycbyg1R-fTqJklLDi7BKJu9qTZaHO0aIH-hDUqIe2RHC1mSF5xy2NnUkEhtY7q0Iq4wgw/exec";
+"https://script.google.com/macros/s/AKfycbyw0A7LEi_9VSenyaqlM9c4jaOlMf7j8Su97jXCrmwfx_Bc1YOaG96tZk7aqIzOYWu4/exec";
 
 let GLOBAL_DATA = [];
 let GLOBAL_GROUPED = {};
-let CURRENT_FILTER = "ALL";
 
 /* ===================================== */
 
@@ -430,8 +400,9 @@ function buildDashboard(data){
 
   });
 
-  document.getElementById("topDashboard")
-  .innerHTML = `
+  document.getElementById(
+    "topDashboard"
+  ).innerHTML = `
 
     <div class="top-header">
 
@@ -447,7 +418,8 @@ function buildDashboard(data){
 
       </div>
 
-      <button class="export-btn"
+      <button
+      class="export-btn"
       onclick="exportAll()">
 
         EXPORT ALL
@@ -533,8 +505,6 @@ function buildDashboard(data){
 /* ===================================== */
 
 function filterPOs(type){
-
-  CURRENT_FILTER = type;
 
   document
     .getElementById("sidebarPOs")
@@ -693,14 +663,394 @@ function addSidebarPO(
 
 function renderPO(po){
 
-  document.getElementById("poContent")
-  .innerHTML = `
-    <div class="section">
-      <div class="section-title">
-        ${po}
+  const rows =
+    GLOBAL_GROUPED[po];
+
+  let reviewHTML = "";
+  let autoHTML = "";
+  let cleanHTML = "";
+
+  rows.forEach(r => {
+
+    const poPrice =
+      Number(r.PO_PRICE || 0);
+
+    const ucPrice =
+      Number(r.UC_PRICE || 0);
+
+    const poMRP =
+      Number(r.PO_MRP || 0);
+
+    const ucMRP =
+      Number(r.UC_MRP || 0);
+
+    const poGST =
+      Number(r.PO_GST || 0);
+
+    const ucGST =
+      Number(r.UC_GST || 0);
+
+    const priceDiff =
+      Math.abs(poPrice - ucPrice);
+
+    const mrpMatch =
+      poMRP === ucMRP;
+
+    const gstMatch =
+      poGST === ucGST;
+
+    let status = "";
+    let badge = "";
+    let reason = "";
+
+    if(
+      priceDiff === 0
+      &&
+      mrpMatch
+      &&
+      gstMatch
+    ){
+
+      status = "clean";
+
+      badge =
+      `<span class="badge clean-badge">
+        CLEAN
+      </span>`;
+
+      reason =
+      "PRICE, GST & MRP matched";
+
+    }
+    else if(
+      priceDiff <= 1
+      &&
+      mrpMatch
+      &&
+      gstMatch
+    ){
+
+      status = "auto";
+
+      badge =
+      `<span class="badge auto-badge">
+        AUTO APPROVED
+      </span>`;
+
+      reason =
+      "PRICE diff below ₹1";
+
+    }
+    else{
+
+      status = "review";
+
+      badge =
+      `<span class="badge review-badge">
+        NEEDS REVIEW
+      </span>`;
+
+      reason =
+      "PRICE / GST / MRP mismatch";
+
+    }
+
+    const card = `
+
+      <div class="item-card">
+
+        <div class="item-title">
+          ${r.SKU_ID}
+        </div>
+
+        <div class="item-sub">
+          PO ${po}
+        </div>
+
+        <table>
+
+          <tr>
+            <th>PO_PRICE</th>
+            <th>UC_PRICE</th>
+            <th>DIFF</th>
+          </tr>
+
+          <tr>
+
+            <td>
+              <input
+              id="po_price_${r.rowNumber}"
+              class="edit-input"
+              value="${poPrice}">
+            </td>
+
+            <td>
+              <input
+              id="price_${r.rowNumber}"
+              class="edit-input"
+              value="${ucPrice}">
+            </td>
+
+            <td>
+              ₹${priceDiff.toFixed(2)}
+            </td>
+
+          </tr>
+
+          <tr>
+            <th>PO_MRP</th>
+            <th>UC_MRP</th>
+            <th>STATUS</th>
+          </tr>
+
+          <tr>
+
+            <td>
+              <input
+              id="po_mrp_${r.rowNumber}"
+              class="edit-input"
+              value="${poMRP}">
+            </td>
+
+            <td>
+              <input
+              id="mrp_${r.rowNumber}"
+              class="edit-input"
+              value="${ucMRP}">
+            </td>
+
+            <td>
+              ${
+                mrpMatch
+                ?
+                "✅ MATCH"
+                :
+                "❌ MISMATCH"
+              }
+            </td>
+
+          </tr>
+
+          <tr>
+            <th>PO_GST</th>
+            <th>UC_GST</th>
+            <th>STATUS</th>
+          </tr>
+
+          <tr>
+
+            <td>
+              <input
+              id="po_gst_${r.rowNumber}"
+              class="edit-input"
+              value="${poGST}">
+            </td>
+
+            <td>
+              <input
+              id="gst_${r.rowNumber}"
+              class="edit-input"
+              value="${ucGST}">
+            </td>
+
+            <td>
+              ${
+                gstMatch
+                ?
+                "✅ MATCH"
+                :
+                "❌ MISMATCH"
+              }
+            </td>
+
+          </tr>
+
+        </table>
+
+        <button
+        class="save-btn"
+        onclick="saveEdit(${r.rowNumber})">
+
+          SAVE
+
+        </button>
+
+        <br>
+
+        ${badge}
+
+        <div class="reason">
+          ${reason}
+        </div>
+
       </div>
+
+    `;
+
+    if(status === "clean"){
+      cleanHTML += card;
+    }
+
+    if(status === "auto"){
+      autoHTML += card;
+    }
+
+    if(status === "review"){
+      reviewHTML += card;
+    }
+
+  });
+
+  document.getElementById(
+    "poContent"
+  ).innerHTML = `
+
+    <div class="section">
+
+      <div class="section-header">
+
+        <div class="section-title">
+          ${po}
+        </div>
+
+        <button
+        class="export-btn"
+        onclick="exportPO('${po}')">
+
+          EXPORT PO
+
+        </button>
+
+      </div>
+
     </div>
+
+    <div class="section">
+
+      <div class="section-title">
+        Needs Review
+      </div>
+
+      <div class="po-grid">
+
+        ${
+          reviewHTML
+          ||
+          '<div class="empty">No review lines</div>'
+        }
+
+      </div>
+
+    </div>
+
+    <div class="section">
+
+      <div class="section-title">
+        Auto Approved
+      </div>
+
+      <div class="po-grid">
+
+        ${
+          autoHTML
+          ||
+          '<div class="empty">No auto approved lines</div>'
+        }
+
+      </div>
+
+    </div>
+
+    <div class="section">
+
+      <div class="section-title">
+        Clean
+      </div>
+
+      <div class="po-grid">
+
+        ${
+          cleanHTML
+          ||
+          '<div class="empty">No clean lines</div>'
+        }
+
+      </div>
+
+    </div>
+
   `;
+
+}
+
+/* ===================================== */
+
+async function saveEdit(rowNumber){
+
+  const PO_PRICE =
+    document.getElementById(
+      `po_price_${rowNumber}`
+    ).value;
+
+  const PO_MRP =
+    document.getElementById(
+      `po_mrp_${rowNumber}`
+    ).value;
+
+  const PO_GST =
+    document.getElementById(
+      `po_gst_${rowNumber}`
+    ).value;
+
+  const UC_PRICE =
+    document.getElementById(
+      `price_${rowNumber}`
+    ).value;
+
+  const UC_GST =
+    document.getElementById(
+      `gst_${rowNumber}`
+    ).value;
+
+  const UC_MRP =
+    document.getElementById(
+      `mrp_${rowNumber}`
+    ).value;
+
+  await fetch(API_URL, {
+
+    method:"POST",
+
+    body: JSON.stringify({
+
+      rowNumber,
+
+      PO_PRICE,
+      PO_MRP,
+      PO_GST,
+
+      UC_PRICE,
+      UC_GST,
+      UC_MRP
+
+    })
+
+  });
+
+  alert("Updated Successfully");
+
+  location.reload();
+
+}
+
+/* ===================================== */
+
+function exportPO(po){
+
+  exportCSV(
+    GLOBAL_GROUPED[po],
+    po + ".csv"
+  );
 
 }
 
@@ -722,17 +1072,32 @@ function exportCSV(rows, filename){
   let csvRows = [];
 
   csvRows.push([
+
     "PoNumber",
     "SKU_ID",
+
     "PO_PRICE",
     "UC_PRICE",
+    "PRICE_DIFF",
+
     "PO_MRP",
     "UC_MRP",
+
     "PO_GST",
     "UC_GST"
+
   ]);
 
   rows.forEach(r => {
+
+    const poPrice =
+      Number(r.PO_PRICE || 0);
+
+    const ucPrice =
+      Number(r.UC_PRICE || 0);
+
+    const priceDiff =
+      Math.abs(poPrice - ucPrice);
 
     csvRows.push([
 
@@ -741,6 +1106,7 @@ function exportCSV(rows, filename){
 
       r.PO_PRICE,
       r.UC_PRICE,
+      priceDiff.toFixed(2),
 
       r.PO_MRP,
       r.UC_MRP,
@@ -757,19 +1123,8 @@ function exportCSV(rows, filename){
     .map(e => e.join(","))
     .join("\n");
 
-  downloadCSV(
-    csvContent,
-    filename
-  );
-
-}
-
-/* ===================================== */
-
-function downloadCSV(csv, filename){
-
   const blob =
-    new Blob([csv], {
+    new Blob([csvContent], {
       type:'text/csv'
     });
 

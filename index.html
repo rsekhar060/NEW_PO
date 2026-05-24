@@ -16,24 +16,26 @@
 }
 
 body{
-  background:#0b0f17;
+  background:#050816;
   color:white;
-  font-family:Arial;
+  font-family:Arial,sans-serif;
   display:flex;
   height:100vh;
   overflow:hidden;
 }
 
+/* ========================= */
+
 .sidebar{
   width:320px;
-  background:#111827;
-  border-right:1px solid #1f2937;
+  background:#0f172a;
+  border-right:1px solid #1e293b;
   overflow-y:auto;
 }
 
 .sidebar-header{
   padding:24px;
-  border-bottom:1px solid #1f2937;
+  border-bottom:1px solid #1e293b;
 }
 
 .sidebar-title{
@@ -42,18 +44,18 @@ body{
 }
 
 .sidebar-sub{
-  color:#9ca3af;
-  margin-top:8px;
+  color:#94a3b8;
+  margin-top:6px;
 }
 
 .po-item{
-  padding:20px;
-  border-bottom:1px solid #1f2937;
+  padding:22px;
+  border-bottom:1px solid #1e293b;
   cursor:pointer;
 }
 
 .po-item:hover{
-  background:#1f2937;
+  background:#172033;
 }
 
 .po-title{
@@ -62,22 +64,24 @@ body{
 }
 
 .po-lines{
-  color:#9ca3af;
   margin-top:5px;
+  color:#94a3b8;
 }
 
 .status-dot{
-  width:10px;
-  height:10px;
+  width:12px;
+  height:12px;
   border-radius:50%;
   float:right;
   margin-top:8px;
 }
 
+/* ========================= */
+
 .main{
   flex:1;
   overflow-y:auto;
-  padding:30px;
+  padding:36px;
 }
 
 .top-header{
@@ -88,13 +92,24 @@ body{
 }
 
 .page-title{
-  font-size:40px;
+  font-size:56px;
   font-weight:bold;
 }
 
 .page-sub{
-  color:#9ca3af;
+  color:#94a3b8;
   margin-top:8px;
+  font-size:28px;
+}
+
+.export-btn{
+  background:#0f172a;
+  border:1px solid #334155;
+  color:white;
+  padding:14px 22px;
+  border-radius:12px;
+  cursor:pointer;
+  font-size:16px;
 }
 
 .summary-grid{
@@ -105,21 +120,21 @@ body{
 }
 
 .summary-card{
-  background:#111827;
-  border:1px solid #1f2937;
-  border-radius:18px;
-  padding:24px;
+  background:#0f172a;
+  border:1px solid #1e293b;
+  border-radius:20px;
+  padding:26px;
   cursor:pointer;
 }
 
 .summary-title{
-  color:#9ca3af;
+  color:#94a3b8;
   font-size:13px;
-  margin-bottom:10px;
+  margin-bottom:12px;
 }
 
 .summary-value{
-  font-size:42px;
+  font-size:54px;
   font-weight:bold;
 }
 
@@ -132,12 +147,14 @@ body{
 }
 
 .orange{
-  color:#ff8a00;
+  color:#ff9800;
 }
 
 .purple{
   color:#a855f7;
 }
+
+/* ========================= */
 
 .section{
   margin-top:40px;
@@ -147,122 +164,115 @@ body{
   display:flex;
   justify-content:space-between;
   align-items:center;
-  margin-bottom:20px;
+  margin-bottom:24px;
 }
 
 .section-title{
-  font-size:28px;
+  font-size:42px;
   font-weight:bold;
 }
 
 .po-grid{
   display:grid;
   grid-template-columns:
-  repeat(auto-fill,minmax(420px,1fr));
-  gap:20px;
+  repeat(auto-fill,minmax(520px,1fr));
+  gap:24px;
 }
 
+/* ========================= */
+
 .item-card{
-  background:#111827;
-  border:1px solid #1f2937;
-  border-radius:18px;
-  padding:24px;
+  background:#0f172a;
+  border:1px solid #1e293b;
+  border-radius:22px;
+  padding:28px;
 }
 
 .item-title{
-  font-size:22px;
+  font-size:34px;
   font-weight:bold;
 }
 
 .item-sub{
-  color:#9ca3af;
-  margin-top:6px;
+  color:#94a3b8;
+  margin-top:8px;
+  font-size:18px;
 }
 
 table{
   width:100%;
-  margin-top:20px;
-  border-collapse:collapse;
+  margin-top:26px;
 }
 
 th{
-  color:#9ca3af;
-  font-size:12px;
-  font-weight:normal;
-  padding-bottom:10px;
+  color:#94a3b8;
   text-align:left;
+  font-size:14px;
+  padding-bottom:10px;
 }
 
 td{
-  font-size:18px;
+  padding-bottom:22px;
+  font-size:20px;
   font-weight:bold;
-  padding-bottom:14px;
 }
 
 .edit-input{
-  width:120px;
-  padding:10px;
-  background:#0b0f17;
-  border:1px solid #374151;
-  border-radius:8px;
+  width:160px;
+  padding:14px;
+  background:#020617;
+  border:1px solid #334155;
+  border-radius:12px;
   color:white;
-}
-
-.save-btn{
-  background:#2563eb;
-  border:none;
-  color:white;
-  padding:10px 18px;
-  border-radius:8px;
-  cursor:pointer;
-  margin-top:18px;
-}
-
-.export-btn{
-  background:#111827;
-  border:1px solid #374151;
-  color:white;
-  padding:12px 20px;
-  border-radius:10px;
-  cursor:pointer;
+  font-size:20px;
 }
 
 .final-box{
-  background:#0f172a;
-  border:1px solid #334155;
-  border-radius:12px;
-  padding:14px;
+  background:#091226;
+  border:1px solid #243041;
+  border-radius:18px;
+  padding:20px;
   margin-top:20px;
 }
 
 .final-grid{
   display:grid;
   grid-template-columns:repeat(3,1fr);
-  gap:12px;
-  margin-top:12px;
+  gap:14px;
 }
 
 .final-item{
   background:#111827;
-  padding:12px;
-  border-radius:10px;
+  border-radius:12px;
+  padding:16px;
 }
 
 .final-label{
-  color:#9ca3af;
-  font-size:12px;
+  color:#94a3b8;
+  font-size:13px;
 }
 
 .final-value{
-  font-size:20px;
+  margin-top:8px;
+  font-size:26px;
   font-weight:bold;
-  margin-top:5px;
 }
 
 .final-status{
-  margin-top:16px;
-  font-size:18px;
+  margin-top:20px;
+  font-size:24px;
   font-weight:bold;
+}
+
+.save-btn{
+  background:#2563eb;
+  border:none;
+  color:white;
+  padding:14px 24px;
+  border-radius:12px;
+  cursor:pointer;
+  font-size:20px;
+  margin-top:24px;
 }
 
 </style>
@@ -305,6 +315,8 @@ const API_URL =
 let GLOBAL_DATA = [];
 let GLOBAL_GROUPED = {};
 
+/* ================================ */
+
 fetch(API_URL)
 .then(res => res.json())
 .then(data => {
@@ -315,7 +327,7 @@ fetch(API_URL)
 
 });
 
-/* ======================================= */
+/* ================================ */
 
 function getLineStatus(r){
 
@@ -341,7 +353,7 @@ function getLineStatus(r){
   const ucGST =
     Number(r.UC_GST || 0);
 
-  const priceDiff =
+  const diff =
     Math.abs(poPrice - ucPrice);
 
   const mrpMatch =
@@ -351,7 +363,7 @@ function getLineStatus(r){
     poGST === ucGST;
 
   if(
-    priceDiff === 0
+    diff === 0
     &&
     mrpMatch
     &&
@@ -361,7 +373,7 @@ function getLineStatus(r){
   }
 
   if(
-    priceDiff <= 1
+    diff <= 1
     &&
     mrpMatch
     &&
@@ -374,7 +386,7 @@ function getLineStatus(r){
 
 }
 
-/* ======================================= */
+/* ================================ */
 
 function getPOStatus(rows){
 
@@ -384,18 +396,18 @@ function getPOStatus(rows){
 
   rows.forEach(r => {
 
-    const status =
+    const s =
       getLineStatus(r);
 
-    if(status === "NEEDS_REVIEW"){
+    if(s === "NEEDS_REVIEW"){
       hasReview = true;
     }
 
-    if(status === "REVIEWED"){
+    if(s === "REVIEWED"){
       hasReviewed = true;
     }
 
-    if(status === "AUTO_APPROVED"){
+    if(s === "AUTO_APPROVED"){
       hasAuto = true;
     }
 
@@ -417,7 +429,7 @@ function getPOStatus(rows){
 
 }
 
-/* ======================================= */
+/* ================================ */
 
 function buildDashboard(data){
 
@@ -437,37 +449,26 @@ function buildDashboard(data){
 
   GLOBAL_GROUPED = grouped;
 
-  let cleanPOs = 0;
-  let autoPOs = 0;
-  let reviewPOs = 0;
-  let reviewedPOs = 0;
+  let clean = 0;
+  let auto = 0;
+  let review = 0;
+  let reviewed = 0;
 
   Object.keys(grouped).forEach(po => {
 
-    const status =
+    const s =
       getPOStatus(grouped[po]);
 
-    if(status === "CLEAN"){
-      cleanPOs++;
-    }
-
-    if(status === "AUTO_APPROVED"){
-      autoPOs++;
-    }
-
-    if(status === "NEEDS_REVIEW"){
-      reviewPOs++;
-    }
-
-    if(status === "REVIEWED"){
-      reviewedPOs++;
-    }
+    if(s === "CLEAN") clean++;
+    if(s === "AUTO_APPROVED") auto++;
+    if(s === "NEEDS_REVIEW") review++;
+    if(s === "REVIEWED") reviewed++;
 
   });
 
-  document.getElementById(
-    "topDashboard"
-  ).innerHTML = `
+  document
+  .getElementById("topDashboard")
+  .innerHTML = `
 
     <div class="top-header">
 
@@ -516,7 +517,7 @@ function buildDashboard(data){
         </div>
 
         <div class="summary-value green">
-          ${cleanPOs}
+          ${clean}
         </div>
 
       </div>
@@ -529,7 +530,7 @@ function buildDashboard(data){
         </div>
 
         <div class="summary-value blue">
-          ${autoPOs}
+          ${auto}
         </div>
 
       </div>
@@ -542,7 +543,7 @@ function buildDashboard(data){
         </div>
 
         <div class="summary-value orange">
-          ${reviewPOs}
+          ${review}
         </div>
 
       </div>
@@ -555,7 +556,7 @@ function buildDashboard(data){
         </div>
 
         <div class="summary-value purple">
-          ${reviewedPOs}
+          ${reviewed}
         </div>
 
       </div>
@@ -580,13 +581,13 @@ function buildDashboard(data){
 
 }
 
-/* ======================================= */
+/* ================================ */
 
 function filterPOs(type){
 
   document
-    .getElementById("sidebarPOs")
-    .innerHTML = "";
+  .getElementById("sidebarPOs")
+  .innerHTML = "";
 
   Object.keys(GLOBAL_GROUPED)
   .forEach(po => {
@@ -597,7 +598,7 @@ function filterPOs(type){
     const status =
       getPOStatus(rows);
 
-    if(type === "ALL" || type === status){
+    if(type === "ALL" || status === type){
 
       addSidebarPO(
         po,
@@ -611,7 +612,7 @@ function filterPOs(type){
 
 }
 
-/* ======================================= */
+/* ================================ */
 
 function addSidebarPO(
   po,
@@ -626,7 +627,7 @@ function addSidebarPO(
   }
 
   if(status === "NEEDS_REVIEW"){
-    color = "#ff8a00";
+    color = "#ff9800";
   }
 
   if(status === "REVIEWED"){
@@ -663,12 +664,12 @@ function addSidebarPO(
   `;
 
   document
-    .getElementById("sidebarPOs")
-    .appendChild(div);
+  .getElementById("sidebarPOs")
+  .appendChild(div);
 
 }
 
-/* ======================================= */
+/* ================================ */
 
 function renderPO(po){
 
@@ -697,14 +698,14 @@ function renderPO(po){
     const ucGST =
       Number(r.UC_GST || 0);
 
-    const priceDiff =
+    const diff =
       Math.abs(poPrice - ucPrice);
 
     const finalStatus =
       getLineStatus(r);
 
     const finalPrice =
-      priceDiff <= 1
+      diff <= 1
       ? poPrice
       : ucPrice;
 
@@ -755,7 +756,7 @@ function renderPO(po){
             </td>
 
             <td>
-              ₹${priceDiff.toFixed(2)}
+              ₹${diff.toFixed(2)}
             </td>
 
           </tr>
@@ -917,40 +918,40 @@ function renderPO(po){
   });
 
   document
-    .getElementById("poContent")
-    .innerHTML = `
+  .getElementById("poContent")
+  .innerHTML = `
 
-      <div class="section">
+    <div class="section">
 
-        <div class="section-header">
+      <div class="section-header">
 
-          <div class="section-title">
-            ${po}
-          </div>
-
-          <button
-          class="export-btn"
-          onclick="exportPO('${po}')">
-
-            EXPORT PO
-
-          </button>
-
+        <div class="section-title">
+          ${po}
         </div>
 
-        <div class="po-grid">
+        <button
+        class="export-btn"
+        onclick="exportPO('${po}')">
 
-          ${html}
+          EXPORT PO
 
-        </div>
+        </button>
 
       </div>
 
-    `;
+      <div class="po-grid">
+
+        ${html}
+
+      </div>
+
+    </div>
+
+  `;
 
 }
 
-/* ======================================= */
+/* ================================ */
 
 async function saveEdit(rowNumber){
 
@@ -984,35 +985,54 @@ async function saveEdit(rowNumber){
       `mrp_${rowNumber}`
     ).value;
 
-  await fetch(API_URL, {
+  try{
 
-    method:"POST",
+    await fetch(API_URL, {
 
-    body: JSON.stringify({
+      method:"POST",
 
-      rowNumber,
+      headers:{
+        "Content-Type":
+        "text/plain;charset=utf-8"
+      },
 
-      PO_PRICE,
-      PO_MRP,
-      PO_GST,
+      body: JSON.stringify({
 
-      UC_PRICE,
-      UC_GST,
-      UC_MRP,
+        rowNumber,
 
-      REVIEWED:"YES"
+        PO_PRICE,
+        PO_MRP,
+        PO_GST,
 
-    })
+        UC_PRICE,
+        UC_GST,
+        UC_MRP,
 
-  });
+        REVIEWED:"YES"
 
-  alert("Updated Successfully");
+      })
 
-  location.reload();
+    });
+
+    alert(
+      "Saved Successfully"
+    );
+
+    location.reload();
+
+  }catch(error){
+
+    console.log(error);
+
+    alert(
+      "Save Failed"
+    );
+
+  }
 
 }
 
-/* ======================================= */
+/* ================================ */
 
 function exportPO(po){
 
@@ -1031,6 +1051,8 @@ function exportAll(){
   );
 
 }
+
+/* ================================ */
 
 function exportCSV(rows, filename){
 
@@ -1077,11 +1099,11 @@ function exportCSV(rows, filename){
     const ucGST =
       Number(r.UC_GST || 0);
 
-    const priceDiff =
+    const diff =
       Math.abs(poPrice - ucPrice);
 
     const finalPrice =
-      priceDiff <= 1
+      diff <= 1
       ? poPrice
       : ucPrice;
 

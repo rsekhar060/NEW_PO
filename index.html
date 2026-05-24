@@ -315,7 +315,7 @@ fetch(API_URL)
 
 });
 
-/* ========================= */
+/* ======================================= */
 
 function getLineStatus(r){
 
@@ -374,7 +374,7 @@ function getLineStatus(r){
 
 }
 
-/* ========================= */
+/* ======================================= */
 
 function getPOStatus(rows){
 
@@ -401,12 +401,12 @@ function getPOStatus(rows){
 
   });
 
-  if(hasReview){
-    return "NEEDS_REVIEW";
-  }
-
   if(hasReviewed){
     return "REVIEWED";
+  }
+
+  if(hasReview){
+    return "NEEDS_REVIEW";
   }
 
   if(hasAuto){
@@ -417,7 +417,7 @@ function getPOStatus(rows){
 
 }
 
-/* ========================= */
+/* ======================================= */
 
 function buildDashboard(data){
 
@@ -580,7 +580,7 @@ function buildDashboard(data){
 
 }
 
-/* ========================= */
+/* ======================================= */
 
 function filterPOs(type){
 
@@ -611,7 +611,7 @@ function filterPOs(type){
 
 }
 
-/* ========================= */
+/* ======================================= */
 
 function addSidebarPO(
   po,
@@ -668,7 +668,7 @@ function addSidebarPO(
 
 }
 
-/* ========================= */
+/* ======================================= */
 
 function renderPO(po){
 
@@ -950,7 +950,7 @@ function renderPO(po){
 
 }
 
-/* ========================= */
+/* ======================================= */
 
 async function saveEdit(rowNumber){
 
@@ -1012,7 +1012,7 @@ async function saveEdit(rowNumber){
 
 }
 
-/* ========================= */
+/* ======================================= */
 
 function exportPO(po){
 
@@ -1095,8 +1095,12 @@ function exportCSV(rows, filename){
       ? poGST
       : ucGST;
 
-    const finalStatus =
+    let finalStatus =
       getLineStatus(r);
+
+    if(r.REVIEWED === "YES"){
+      finalStatus = "REVIEWED";
+    }
 
     csvRows.push([
 
@@ -1123,9 +1127,7 @@ function exportCSV(rows, filename){
 
   let csvContent =
     csvRows
-    .map(row =>
-      row.join(",")
-    )
+    .map(e => e.join(","))
     .join("\n");
 
   const blob =
@@ -1140,26 +1142,17 @@ function exportCSV(rows, filename){
   const link =
     document.createElement("a");
 
-  const url =
+  link.href =
     URL.createObjectURL(blob);
 
-  link.setAttribute(
-    "href",
-    url
-  );
+  link.download =
+    filename;
 
-  link.setAttribute(
-    "download",
-    filename
-  );
-
-  document.body
-    .appendChild(link);
+  document.body.appendChild(link);
 
   link.click();
 
-  document.body
-    .removeChild(link);
+  document.body.removeChild(link);
 
 }
 

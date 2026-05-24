@@ -424,7 +424,164 @@ function buildDashboard(data){
 
   GLOBAL_GROUPED = grouped;
 
+  let cleanPOs = 0;
+  let autoPOs = 0;
+  let reviewPOs = 0;
+
+  Object.keys(grouped).forEach(po => {
+
+    const rows = grouped[po];
+
+    let status =
+      getPOStatus(rows);
+
+    if(status === "CLEAN"){
+      cleanPOs++;
+    }
+
+    if(status === "AUTO_APPROVED"){
+      autoPOs++;
+    }
+
+    if(status === "NEEDS_REVIEW"){
+      reviewPOs++;
+    }
+
+  });
+
+  document.getElementById(
+    "topDashboard"
+  ).innerHTML = `
+
+    <div class="top-header">
+
+      <div>
+
+        <div class="page-title">
+          TP Dashboard
+        </div>
+
+        <div class="page-sub">
+          Instamart Validation Dashboard
+        </div>
+
+      </div>
+
+      <button
+      class="export-btn"
+      onclick="exportAll()">
+
+        EXPORT ALL
+
+      </button>
+
+    </div>
+
+    <div class="summary-grid">
+
+      <div class="summary-card"
+      onclick="filterPOs('ALL')">
+
+        <div class="summary-title">
+          TOTAL POs
+        </div>
+
+        <div class="summary-value">
+          ${Object.keys(grouped).length}
+        </div>
+
+      </div>
+
+      <div class="summary-card">
+
+        <div class="summary-title">
+          PO LINES
+        </div>
+
+        <div class="summary-value">
+          ${data.length}
+        </div>
+
+      </div>
+
+      <div class="summary-card"
+      onclick="filterPOs('CLEAN')">
+
+        <div class="summary-title">
+          CLEAN
+        </div>
+
+        <div class="summary-value green">
+          ${cleanPOs}
+        </div>
+
+      </div>
+
+      <div class="summary-card"
+      onclick="filterPOs('AUTO_APPROVED')">
+
+        <div class="summary-title">
+          AUTO APPROVED
+        </div>
+
+        <div class="summary-value blue">
+          ${autoPOs}
+        </div>
+
+      </div>
+
+      <div class="summary-card"
+      onclick="filterPOs('NEEDS_REVIEW')">
+
+        <div class="summary-title">
+          NEEDS REVIEW
+        </div>
+
+        <div class="summary-value orange">
+          ${reviewPOs}
+        </div>
+
+      </div>
+
+    </div>
+
+  `;
+
   filterPOs("ALL");
+
+}
+
+/* ===================================== */
+
+function getPOStatus(rows){
+
+  let hasReview = false;
+  let hasAuto = false;
+
+  rows.forEach(r => {
+
+    const status =
+      getLineStatus(r);
+
+    if(status === "NEEDS_REVIEW"){
+      hasReview = true;
+    }
+
+    if(status === "AUTO_APPROVED"){
+      hasAuto = true;
+    }
+
+  });
+
+  if(hasReview){
+    return "NEEDS_REVIEW";
+  }
+
+  if(hasAuto){
+    return "AUTO_APPROVED";
+  }
+
+  return "CLEAN";
 
 }
 
@@ -442,7 +599,28 @@ function filterPOs(type){
     const rows =
       GLOBAL_GROUPED[po];
 
-    addSidebarPO(po,rows);
+    const status =
+      getPOStatus(rows);
+
+    let show = false;
+
+    if(type === "ALL"){
+      show = true;
+    }
+
+    if(type === status){
+      show = true;
+    }
+
+    if(show){
+
+      addSidebarPO(
+        po,
+        rows,
+        status
+      );
+
+    }
 
   });
 
@@ -450,7 +628,21 @@ function filterPOs(type){
 
 /* ===================================== */
 
-function addSidebarPO(po,rows){
+function addSidebarPO(
+  po,
+  rows,
+  status
+){
+
+  let color = "#22c55e";
+
+  if(status === "AUTO_APPROVED"){
+    color = "#3b82f6";
+  }
+
+  if(status === "NEEDS_REVIEW"){
+    color = "#ff8a00";
+  }
 
   const div =
     document.createElement("div");
@@ -466,7 +658,13 @@ function addSidebarPO(po,rows){
   div.innerHTML = `
 
     <div class="po-title">
+
       ${po}
+
+      <span class="status-dot"
+      style="background:${color}">
+      </span>
+
     </div>
 
     <div class="po-lines">
@@ -488,7 +686,9 @@ function renderPO(po){
   const rows =
     GLOBAL_GROUPED[po];
 
-  let html = "";
+  let reviewHTML = "";
+  let autoHTML = "";
+  let cleanHTML = "";
 
   rows.forEach(r => {
 
@@ -513,6 +713,12 @@ function renderPO(po){
     const priceDiff =
       Math.abs(poPrice - ucPrice);
 
+    const mrpMatch =
+      poMRP === ucMRP;
+
+    const gstMatch =
+      poGST === ucGST;
+
     const finalStatus =
       getLineStatus(r);
 
@@ -522,16 +728,48 @@ function renderPO(po){
       : ucPrice;
 
     const finalMRP =
-      poMRP === ucMRP
+      mrpMatch
       ? poMRP
       : ucMRP;
 
     const finalGST =
-      poGST === ucGST
+      gstMatch
       ? poGST
       : ucGST;
 
-    html += `
+    let badge = "";
+
+    if(finalStatus === "CLEAN"){
+
+      badge =
+      `<span class="badge clean-badge">
+        CLEAN
+      </span>`;
+
+    }
+
+    else if(
+      finalStatus ===
+      "AUTO_APPROVED"
+    ){
+
+      badge =
+      `<span class="badge auto-badge">
+        AUTO APPROVED
+      </span>`;
+
+    }
+
+    else{
+
+      badge =
+      `<span class="badge review-badge">
+        NEEDS REVIEW
+      </span>`;
+
+    }
+
+    const card = `
 
       <div class="item-card">
 
@@ -540,8 +778,108 @@ function renderPO(po){
         </div>
 
         <div class="item-sub">
-          ${po}
+          PO ${po}
         </div>
+
+        <table>
+
+          <tr>
+            <th>PO_PRICE</th>
+            <th>UC_PRICE</th>
+            <th>DIFF</th>
+          </tr>
+
+          <tr>
+
+            <td>
+              <input
+              id="po_price_${r.rowNumber}"
+              class="edit-input"
+              value="${poPrice}">
+            </td>
+
+            <td>
+              <input
+              id="price_${r.rowNumber}"
+              class="edit-input"
+              value="${ucPrice}">
+            </td>
+
+            <td>
+              ₹${priceDiff.toFixed(2)}
+            </td>
+
+          </tr>
+
+          <tr>
+            <th>PO_MRP</th>
+            <th>UC_MRP</th>
+            <th>STATUS</th>
+          </tr>
+
+          <tr>
+
+            <td>
+              <input
+              id="po_mrp_${r.rowNumber}"
+              class="edit-input"
+              value="${poMRP}">
+            </td>
+
+            <td>
+              <input
+              id="mrp_${r.rowNumber}"
+              class="edit-input"
+              value="${ucMRP}">
+            </td>
+
+            <td>
+              ${
+                mrpMatch
+                ?
+                "✅ MATCH"
+                :
+                "❌ MISMATCH"
+              }
+            </td>
+
+          </tr>
+
+          <tr>
+            <th>PO_GST</th>
+            <th>UC_GST</th>
+            <th>STATUS</th>
+          </tr>
+
+          <tr>
+
+            <td>
+              <input
+              id="po_gst_${r.rowNumber}"
+              class="edit-input"
+              value="${poGST}">
+            </td>
+
+            <td>
+              <input
+              id="gst_${r.rowNumber}"
+              class="edit-input"
+              value="${ucGST}">
+            </td>
+
+            <td>
+              ${
+                gstMatch
+                ?
+                "✅ MATCH"
+                :
+                "❌ MISMATCH"
+              }
+            </td>
+
+          </tr>
+
+        </table>
 
         <div class="final-box">
 
@@ -604,43 +942,181 @@ function renderPO(po){
 
         </div>
 
+        <button
+        class="save-btn"
+        onclick="saveEdit(${r.rowNumber})">
+
+          SAVE
+
+        </button>
+
+        <br>
+
+        ${badge}
+
       </div>
 
     `;
+
+    if(finalStatus === "CLEAN"){
+      cleanHTML += card;
+    }
+
+    if(
+      finalStatus ===
+      "AUTO_APPROVED"
+    ){
+      autoHTML += card;
+    }
+
+    if(
+      finalStatus ===
+      "NEEDS_REVIEW"
+    ){
+      reviewHTML += card;
+    }
 
   });
 
-  document
-    .getElementById("poContent")
-    .innerHTML = `
+  document.getElementById(
+    "poContent"
+  ).innerHTML = `
 
-      <div class="section">
+    <div class="section">
 
-        <div class="section-header">
+      <div class="section-header">
 
-          <div class="section-title">
-            ${po}
-          </div>
-
-          <button
-          class="export-btn"
-          onclick="exportPO('${po}')">
-
-            EXPORT PO
-
-          </button>
-
+        <div class="section-title">
+          ${po}
         </div>
 
-        <div class="po-grid">
+        <button
+        class="export-btn"
+        onclick="exportPO('${po}')">
 
-          ${html}
+          EXPORT PO
 
-        </div>
+        </button>
 
       </div>
 
-    `;
+    </div>
+
+    <div class="section">
+
+      <div class="section-title">
+        Needs Review
+      </div>
+
+      <div class="po-grid">
+
+        ${
+          reviewHTML
+          ||
+          '<div class="empty">No review lines</div>'
+        }
+
+      </div>
+
+    </div>
+
+    <div class="section">
+
+      <div class="section-title">
+        Auto Approved
+      </div>
+
+      <div class="po-grid">
+
+        ${
+          autoHTML
+          ||
+          '<div class="empty">No auto approved lines</div>'
+        }
+
+      </div>
+
+    </div>
+
+    <div class="section">
+
+      <div class="section-title">
+        Clean
+      </div>
+
+      <div class="po-grid">
+
+        ${
+          cleanHTML
+          ||
+          '<div class="empty">No clean lines</div>'
+        }
+
+      </div>
+
+    </div>
+
+  `;
+
+}
+
+/* ===================================== */
+
+async function saveEdit(rowNumber){
+
+  const PO_PRICE =
+    document.getElementById(
+      `po_price_${rowNumber}`
+    ).value;
+
+  const PO_MRP =
+    document.getElementById(
+      `po_mrp_${rowNumber}`
+    ).value;
+
+  const PO_GST =
+    document.getElementById(
+      `po_gst_${rowNumber}`
+    ).value;
+
+  const UC_PRICE =
+    document.getElementById(
+      `price_${rowNumber}`
+    ).value;
+
+  const UC_GST =
+    document.getElementById(
+      `gst_${rowNumber}`
+    ).value;
+
+  const UC_MRP =
+    document.getElementById(
+      `mrp_${rowNumber}`
+    ).value;
+
+  await fetch(API_URL, {
+
+    method:"POST",
+
+    body: JSON.stringify({
+
+      rowNumber,
+
+      PO_PRICE,
+      PO_MRP,
+      PO_GST,
+
+      UC_PRICE,
+      UC_GST,
+      UC_MRP
+
+    })
+
+  });
+
+  alert("Updated Successfully");
+
+  location.reload();
 
 }
 
@@ -655,8 +1131,6 @@ function exportPO(po){
 
 }
 
-/* ===================================== */
-
 function exportAll(){
 
   exportCSV(
@@ -665,8 +1139,6 @@ function exportAll(){
   );
 
 }
-
-/* ===================================== */
 
 function exportCSV(rows, filename){
 
@@ -789,9 +1261,6 @@ function exportCSV(rows, filename){
     filename
   );
 
-  link.style.visibility =
-    "hidden";
-
   document.body
     .appendChild(link);
 
@@ -805,4 +1274,5 @@ function exportCSV(rows, filename){
 </script>
 
 </body>
+
 </html>

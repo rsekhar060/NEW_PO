@@ -1,354 +1,26 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>TP Dashboard</title>
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-<style>
-
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-}
-
-body{
-  background:#0d1117;
-  color:white;
-  font-family:Arial;
-  display:flex;
-  height:100vh;
-  overflow:hidden;
-}
-
-/* SIDEBAR */
-
-.sidebar{
-  width:280px;
-  background:#111827;
-  border-right:1px solid #1f2937;
-  overflow-y:auto;
-  padding:20px;
-}
-
-.sidebar h2{
-  margin-bottom:20px;
-  font-size:22px;
-}
-
-.po-item{
-  background:#161b22;
-  padding:15px;
-  border-radius:10px;
-  margin-bottom:12px;
-  cursor:pointer;
-  border:1px solid #222;
-}
-
-.po-item:hover{
-  background:#1f2937;
-}
-
-.po-title{
-  font-size:18px;
-  font-weight:bold;
-}
-
-.po-lines{
-  color:#9ca3af;
-  margin-top:5px;
-  font-size:14px;
-}
-
-.status-dot{
-  width:10px;
-  height:10px;
-  border-radius:50%;
-  float:right;
-  margin-top:5px;
-}
-
-/* MAIN */
-
-.main{
-  flex:1;
-  overflow-y:auto;
-  padding:25px;
-}
-
-/* HEADER */
-
-.header{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-bottom:25px;
-}
-
-.header-left h1{
-  font-size:30px;
-}
-
-.header-left p{
-  color:#9ca3af;
-  margin-top:5px;
-}
-
-/* CARDS */
-
-.cards{
-  display:grid;
-  grid-template-columns:repeat(5,1fr);
-  gap:15px;
-  margin-bottom:30px;
-}
-
-.card{
-  background:#161b22;
-  padding:20px;
-  border-radius:15px;
-  border:1px solid #1f2937;
-}
-
-.card-title{
-  color:#9ca3af;
-  font-size:13px;
-  margin-bottom:10px;
-}
-
-.card-value{
-  font-size:38px;
-  font-weight:bold;
-}
-
-/* SECTION */
-
-.section-title{
-  margin:30px 0 15px;
-  font-size:24px;
-}
-
-.po-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(320px,1fr));
-  gap:20px;
-}
-
-/* PO CARD */
-
-.po-card{
-  background:#161b22;
-  border-radius:15px;
-  padding:20px;
-  border:1px solid #1f2937;
-}
-
-.po-header{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-bottom:10px;
-}
-
-.po-name{
-  font-size:20px;
-  font-weight:bold;
-}
-
-.po-sub{
-  color:#9ca3af;
-  margin-top:5px;
-}
-
-.badges{
-  margin-top:15px;
-}
-
-.badge{
-  display:inline-block;
-  padding:6px 10px;
-  border-radius:6px;
-  font-size:12px;
-  margin-right:5px;
-  font-weight:bold;
-}
-
-.clean{
-  background:#052e16;
-  color:#22c55e;
-}
-
-.review{
-  background:#3b0a0a;
-  color:#ff6b6b;
-}
-
-.refresh{
-  background:#3d2b00;
-  color:#facc15;
-}
-
-.approved{
-  background:#0a1f44;
-  color:#60a5fa;
-}
-
-/* TABLE */
-
-table{
-  width:100%;
-  border-collapse:collapse;
-  margin-top:20px;
-}
-
-th,td{
-  border:1px solid #1f2937;
-  padding:10px;
-  text-align:center;
-}
-
-th{
-  background:#1f2937;
-}
-
-.good-row{
-  background:#052e16;
-}
-
-.bad-row{
-  background:#3b0a0a;
-}
-
-/* BUTTON */
-
-.export-btn{
-  background:#1f2937;
-  border:none;
-  color:white;
-  padding:12px 20px;
-  border-radius:10px;
-  cursor:pointer;
-}
-
-.export-btn:hover{
-  background:#374151;
-}
-
-</style>
-
-</head>
-
-<body>
-
-<!-- SIDEBAR -->
-
-<div class="sidebar">
-
-<h2>Purchase Orders</h2>
-
-<div id="sidebarPOs"></div>
-
-</div>
-
-<!-- MAIN -->
-
-<div class="main">
-
-<div class="header">
-
-<div class="header-left">
-<h1>TP Dashboard</h1>
-<p>Instamart Validation Dashboard</p>
-</div>
-
-<button class="export-btn" onclick="exportCSV()">
-EXPORT ALL
-</button>
-
-</div>
-
-<!-- SUMMARY CARDS -->
-
-<div class="cards">
-
-<div class="card">
-<div class="card-title">TOTAL POs</div>
-<div class="card-value" id="totalPOs">0</div>
-</div>
-
-<div class="card">
-<div class="card-title">PO LINES</div>
-<div class="card-value" id="totalLines">0</div>
-</div>
-
-<div class="card">
-<div class="card-title">CLEAN</div>
-<div class="card-value" style="color:#22c55e" id="cleanCount">0</div>
-</div>
-
-<div class="card">
-<div class="card-title">AUTO APPROVED</div>
-<div class="card-value" style="color:#60a5fa" id="approvedCount">0</div>
-</div>
-
-<div class="card">
-<div class="card-title">NEEDS REVIEW</div>
-<div class="card-value" style="color:#ff6b6b" id="reviewCount">0</div>
-</div>
-
-</div>
-
-<!-- NEED REVIEW -->
-
-<h2 class="section-title">Needs Review</h2>
-<div class="po-grid" id="reviewGrid"></div>
-
-<!-- APPROVED -->
-
-<h2 class="section-title">Auto Approved</h2>
-<div class="po-grid" id="approvedGrid"></div>
-
-<!-- CLEAN -->
-
-<h2 class="section-title">Clean</h2>
-<div class="po-grid" id="cleanGrid"></div>
-
-</div>
-
 <script>
-
-/* ===========================
-   APPS SCRIPT URL
-=========================== */
 
 const API_URL =
 "https://script.google.com/macros/s/AKfycbwn45en_PUwL6kVHWQS3rg6zPMcDVMaVN32qlTQMtpWcGie_UjARb2I-t9XTSMQfCwm/exec";
 
-/* ===========================
-   FETCH DATA
-=========================== */
+let GLOBAL_DATA = [];
+let GLOBAL_GROUPED = {};
 
 fetch(API_URL)
 .then(res => res.json())
 .then(data => {
 
+  GLOBAL_DATA = data;
+
   processDashboard(data);
 
 });
 
-/* ===========================
-   PROCESS
-=========================== */
+/* ========================= */
 
 function processDashboard(data){
 
-  let grouped = {};
+  const grouped = {};
 
   data.forEach(r => {
 
@@ -362,21 +34,17 @@ function processDashboard(data){
 
   });
 
-  const totalPOs =
-    Object.keys(grouped).length;
-
-  const totalLines =
-    data.length;
+  GLOBAL_GROUPED = grouped;
 
   document.getElementById("totalPOs")
-    .innerText = totalPOs;
+    .innerText = Object.keys(grouped).length;
 
   document.getElementById("totalLines")
-    .innerText = totalLines;
+    .innerText = data.length;
 
   let clean = 0;
-  let approved = 0;
   let review = 0;
+  let refresh = 0;
 
   Object.keys(grouped).forEach(po => {
 
@@ -384,45 +52,47 @@ function processDashboard(data){
 
     let reviewCount = 0;
     let cleanCount = 0;
+    let refreshCount = 0;
 
     rows.forEach(r => {
 
-      const ok =
-        Number(r.PO_PRICE) === Number(r.UC_PRICE)
-        &&
-        Number(r.PO_GST) === Number(r.UC_GST)
-        &&
-        Number(r.PO_MRP) === Number(r.UC_MRP);
+      const diff =
+        Math.abs(
+          Number(r.PO_PRICE || 0)
+          -
+          Number(r.UC_PRICE || 0)
+        );
 
-      if(ok){
+      if(diff === 0){
         cleanCount++;
-      }else{
+      }
+      else if(diff <= 1){
+        refreshCount++;
+      }
+      else{
         reviewCount++;
       }
 
     });
 
-    let status = "";
-
-    if(reviewCount > 0){
-      status = "review";
-      review++;
-    }
-    else if(cleanCount === rows.length){
-      status = "clean";
+    if(cleanCount === rows.length){
       clean++;
     }
-    else{
-      status = "approved";
-      approved++;
+
+    if(reviewCount > 0){
+      review++;
     }
 
-    createPOCard(
+    if(refreshCount > 0){
+      refresh++;
+    }
+
+    createSidebarPO(
       po,
       rows,
       cleanCount,
       reviewCount,
-      status
+      refreshCount
     );
 
   });
@@ -431,115 +101,52 @@ function processDashboard(data){
     .innerText = clean;
 
   document.getElementById("approvedCount")
-    .innerText = approved;
+    .innerText = refresh;
 
   document.getElementById("reviewCount")
     .innerText = review;
 
+  const firstPO =
+    Object.keys(grouped)[0];
+
+  renderPO(firstPO);
+
 }
 
-/* ===========================
-   CREATE PO CARD
-=========================== */
+/* ========================= */
 
-function createPOCard(
+function createSidebarPO(
   po,
   rows,
   cleanCount,
   reviewCount,
-  status
+  refreshCount
 ){
 
-  const card = document.createElement("div");
+  let color = "#22c55e";
 
-  card.className = "po-card";
-
-  let dotColor = "#22c55e";
-
-  if(status === "review"){
-    dotColor = "#ff6b6b";
+  if(reviewCount > 0){
+    color = "#ff8a00";
+  }
+  else if(refreshCount > 0){
+    color = "#3b82f6";
   }
 
-  if(status === "approved"){
-    dotColor = "#60a5fa";
-  }
+  const div =
+    document.createElement("div");
 
-  card.innerHTML = `
+  div.className = "po-item";
 
-    <div class="po-header">
+  div.onclick = () => renderPO(po);
 
-      <div>
-
-        <div class="po-name">${po}</div>
-
-        <div class="po-sub">
-          ${rows.length} lines
-        </div>
-
-      </div>
-
-      <div class="status-dot"
-        style="background:${dotColor}">
-      </div>
-
-    </div>
-
-    <div class="badges">
-
-      ${
-        reviewCount > 0
-        ?
-        `<span class="badge review">
-          ${reviewCount} REVIEW
-        </span>`
-        :
-        ""
-      }
-
-      ${
-        cleanCount > 0
-        ?
-        `<span class="badge clean">
-          ${cleanCount} CLEAN
-        </span>`
-        :
-        ""
-      }
-
-    </div>
-
-  `;
-
-  /* ADD TO GRID */
-
-  if(status === "review"){
-
-    document
-      .getElementById("reviewGrid")
-      .appendChild(card);
-
-  }
-  else{
-
-    document
-      .getElementById("cleanGrid")
-      .appendChild(card);
-
-  }
-
-  /* SIDEBAR */
-
-  const side = document.createElement("div");
-
-  side.className = "po-item";
-
-  side.innerHTML = `
+  div.innerHTML = `
 
     <div class="po-title">
+
       ${po}
 
       <span class="status-dot"
-      style="background:${dotColor}">
+      style="background:${color}">
       </span>
 
     </div>
@@ -552,21 +159,255 @@ function createPOCard(
 
   document
     .getElementById("sidebarPOs")
-    .appendChild(side);
+    .appendChild(div);
 
 }
 
-/* ===========================
-   EXPORT CSV
-=========================== */
+/* ========================= */
 
-function exportCSV(){
+function renderPO(po){
 
-  window.open(API_URL);
+  const rows =
+    GLOBAL_GROUPED[po];
+
+  let cleanHTML = "";
+  let refreshHTML = "";
+  let reviewHTML = "";
+
+  rows.forEach(r => {
+
+    const poPrice =
+      Number(r.PO_PRICE || 0);
+
+    const ucPrice =
+      Number(r.UC_PRICE || 0);
+
+    const diff =
+      Math.abs(poPrice - ucPrice);
+
+    let section = "";
+
+    if(diff === 0){
+      section = "clean";
+    }
+    else if(diff <= 1){
+      section = "refresh";
+    }
+    else{
+      section = "review";
+    }
+
+    const card = `
+
+    <div class="po-card">
+
+      <div class="po-header">
+
+        <div>
+
+          <div class="po-name">
+            ${r.SKU_ID}
+          </div>
+
+          <div class="po-sub">
+            PO ${po}
+          </div>
+
+        </div>
+
+      </div>
+
+      <br>
+
+      <table>
+
+        <tr>
+          <th>PO_PRICE</th>
+          <th>UC_PRICE</th>
+          <th>DIFF</th>
+        </tr>
+
+        <tr>
+
+          <td>₹${poPrice}</td>
+
+          <td>₹${ucPrice}</td>
+
+          <td>
+            ₹${diff.toFixed(2)}
+          </td>
+
+        </tr>
+
+      </table>
+
+      <br>
+
+      ${
+        section === "review"
+        ?
+        `
+        <span class="badge review">
+          NEEDS REVIEW
+        </span>
+        `
+        :
+        ""
+      }
+
+      ${
+        section === "refresh"
+        ?
+        `
+        <span class="badge approved">
+          AUTO APPROVED
+        </span>
+        `
+        :
+        ""
+      }
+
+      ${
+        section === "clean"
+        ?
+        `
+        <span class="badge clean">
+          CLEAN
+        </span>
+        `
+        :
+        ""
+      }
+
+    </div>
+
+    `;
+
+    if(section === "clean"){
+      cleanHTML += card;
+    }
+
+    if(section === "refresh"){
+      refreshHTML += card;
+    }
+
+    if(section === "review"){
+      reviewHTML += card;
+    }
+
+  });
+
+  document.querySelector(".main").innerHTML = `
+
+  <div class="header">
+
+    <div class="header-left">
+      <h1>${po}</h1>
+      <p>${rows.length} lines</p>
+    </div>
+
+    <button class="export-btn"
+      onclick="exportPO('${po}')">
+
+      EXPORT PO
+
+    </button>
+
+  </div>
+
+  <div class="cards">
+
+    <div class="card">
+      <div class="card-title">
+        TOTAL LINES
+      </div>
+      <div class="card-value">
+        ${rows.length}
+      </div>
+    </div>
+
+  </div>
+
+  <h2 class="section-title">
+    Needs Review
+  </h2>
+
+  <div class="po-grid">
+    ${reviewHTML || 'No review items'}
+  </div>
+
+  <h2 class="section-title">
+    Auto Approved
+  </h2>
+
+  <div class="po-grid">
+    ${refreshHTML || 'No auto approvals'}
+  </div>
+
+  <h2 class="section-title">
+    Clean
+  </h2>
+
+  <div class="po-grid">
+    ${cleanHTML || 'No clean items'}
+  </div>
+
+  `;
+
+}
+
+/* ========================= */
+
+function exportPO(po){
+
+  const rows =
+    GLOBAL_GROUPED[po];
+
+  let csv =
+`PoNumber,SKU_ID,PO_PRICE,UC_PRICE,DIFF,STATUS\n`;
+
+  rows.forEach(r => {
+
+    const diff =
+      Math.abs(
+        Number(r.PO_PRICE || 0)
+        -
+        Number(r.UC_PRICE || 0)
+      );
+
+    let status = "REVIEW";
+
+    if(diff === 0){
+      status = "CLEAN";
+    }
+    else if(diff <= 1){
+      status = "AUTO_APPROVED";
+    }
+
+    csv +=
+`${r.PoNumber},
+${r.SKU_ID},
+${r.PO_PRICE},
+${r.UC_PRICE},
+${diff},
+${status}\n`;
+
+  });
+
+  const blob =
+    new Blob([csv], {type:'text/csv'});
+
+  const a =
+    document.createElement('a');
+
+  a.href =
+    URL.createObjectURL(blob);
+
+  a.download =
+    po + ".csv";
+
+  a.click();
 
 }
 
 </script>
-
-</body>
-</html>

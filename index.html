@@ -1,10 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 
 <head>
 
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>TP Dashboard</title>
 
@@ -17,15 +16,13 @@
 }
 
 body{
-  font-family:Arial,sans-serif;
-  background:#0b1120;
+  background:#0b0f17;
   color:white;
+  font-family:Arial;
   display:flex;
   height:100vh;
   overflow:hidden;
 }
-
-/* ========================= */
 
 .sidebar{
   width:320px;
@@ -40,23 +37,23 @@ body{
 }
 
 .sidebar-title{
-  font-size:28px;
+  font-size:24px;
   font-weight:bold;
 }
 
 .sidebar-sub{
   color:#9ca3af;
-  margin-top:6px;
+  margin-top:8px;
 }
 
 .po-item{
-  padding:18px;
+  padding:20px;
   border-bottom:1px solid #1f2937;
   cursor:pointer;
 }
 
 .po-item:hover{
-  background:#1e293b;
+  background:#1f2937;
 }
 
 .po-title{
@@ -65,11 +62,17 @@ body{
 }
 
 .po-lines{
-  margin-top:5px;
   color:#9ca3af;
+  margin-top:5px;
 }
 
-/* ========================= */
+.status-dot{
+  width:10px;
+  height:10px;
+  border-radius:50%;
+  float:right;
+  margin-top:8px;
+}
 
 .main{
   flex:1;
@@ -77,34 +80,22 @@ body{
   padding:30px;
 }
 
-.header{
+.top-header{
   display:flex;
   justify-content:space-between;
   align-items:center;
   margin-bottom:30px;
 }
 
-.title{
-  font-size:50px;
+.page-title{
+  font-size:40px;
   font-weight:bold;
 }
 
-.sub{
+.page-sub{
   color:#9ca3af;
-  margin-top:6px;
+  margin-top:8px;
 }
-
-.export-btn{
-  background:#2563eb;
-  color:white;
-  border:none;
-  padding:14px 20px;
-  border-radius:10px;
-  cursor:pointer;
-  font-size:15px;
-}
-
-/* ========================= */
 
 .summary-grid{
   display:grid;
@@ -124,11 +115,11 @@ body{
 .summary-title{
   color:#9ca3af;
   font-size:13px;
-  margin-bottom:12px;
+  margin-bottom:10px;
 }
 
 .summary-value{
-  font-size:46px;
+  font-size:42px;
   font-weight:bold;
 }
 
@@ -141,100 +132,171 @@ body{
 }
 
 .orange{
-  color:#ff9800;
+  color:#ff8a00;
 }
 
-.purple{
-  color:#a855f7;
+.section{
+  margin-top:40px;
 }
 
-/* ========================= */
-
-.po-grid{
-  display:grid;
-  grid-template-columns:
-  repeat(auto-fill,minmax(520px,1fr));
-  gap:24px;
+.section-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:20px;
 }
 
-.card{
-  background:#111827;
-  border:1px solid #1f2937;
-  border-radius:20px;
-  padding:24px;
-}
-
-.sku{
+.section-title{
   font-size:28px;
   font-weight:bold;
 }
 
-.po{
-  color:#9ca3af;
-  margin-top:5px;
+.po-grid{
+  display:grid;
+  grid-template-columns:
+  repeat(auto-fill,minmax(420px,1fr));
+  gap:20px;
 }
 
-/* ========================= */
-
-table{
-  width:100%;
-  margin-top:20px;
+.item-card{
+  background:#111827;
+  border:1px solid #1f2937;
+  border-radius:18px;
+  padding:24px;
 }
 
-th{
-  text-align:left;
-  color:#9ca3af;
-  padding-bottom:8px;
-  font-size:13px;
-}
-
-td{
-  padding-bottom:18px;
-}
-
-input{
-  width:140px;
-  padding:12px;
-  background:#0f172a;
-  border:1px solid #334155;
-  border-radius:10px;
-  color:white;
-  font-size:16px;
-}
-
-/* ========================= */
-
-.status{
-  margin-top:20px;
+.item-title{
   font-size:22px;
   font-weight:bold;
 }
 
-.clean{
-  color:#22c55e;
+.item-sub{
+  color:#9ca3af;
+  margin-top:6px;
 }
 
-.auto{
-  color:#3b82f6;
+table{
+  width:100%;
+  margin-top:20px;
+  border-collapse:collapse;
 }
 
-.review{
-  color:#ff9800;
+th{
+  color:#9ca3af;
+  font-size:12px;
+  font-weight:normal;
+  padding-bottom:10px;
+  text-align:left;
 }
 
-.reviewed{
-  color:#a855f7;
+td{
+  font-size:18px;
+  font-weight:bold;
+  padding-bottom:14px;
+}
+
+.edit-input{
+  width:120px;
+  padding:10px;
+  background:#0b0f17;
+  border:1px solid #374151;
+  border-radius:8px;
+  color:white;
 }
 
 .save-btn{
-  margin-top:24px;
   background:#2563eb;
-  color:white;
   border:none;
-  padding:14px 24px;
+  color:white;
+  padding:10px 18px;
+  border-radius:8px;
+  cursor:pointer;
+  margin-top:18px;
+}
+
+.export-btn{
+  background:#111827;
+  border:1px solid #374151;
+  color:white;
+  padding:12px 20px;
   border-radius:10px;
   cursor:pointer;
-  font-size:16px;
+}
+
+.badge{
+  display:inline-block;
+  padding:8px 12px;
+  border-radius:8px;
+  font-size:12px;
+  font-weight:bold;
+  margin-top:18px;
+}
+
+.clean-badge{
+  background:#052e16;
+  color:#22c55e;
+}
+
+.auto-badge{
+  background:#0a1f44;
+  color:#3b82f6;
+}
+
+.review-badge{
+  background:#3b0a0a;
+  color:#ff8a00;
+}
+
+.reason{
+  margin-top:16px;
+  padding:12px;
+  border-radius:10px;
+  background:#1f2937;
+  color:#d1d5db;
+  font-size:13px;
+}
+
+.empty{
+  color:#9ca3af;
+  padding:20px;
+}
+
+.final-box{
+  background:#0f172a;
+  border:1px solid #334155;
+  border-radius:12px;
+  padding:14px;
+  margin-top:20px;
+}
+
+.final-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:12px;
+  margin-top:12px;
+}
+
+.final-item{
+  background:#111827;
+  padding:12px;
+  border-radius:10px;
+}
+
+.final-label{
+  color:#9ca3af;
+  font-size:12px;
+}
+
+.final-value{
+  font-size:20px;
+  font-weight:bold;
+  margin-top:5px;
+}
+
+.final-status{
+  margin-top:16px;
+  font-size:18px;
+  font-weight:bold;
 }
 
 </style>
@@ -257,81 +319,44 @@ input{
 
   </div>
 
-  <div id="sidebar"></div>
+  <div id="sidebarPOs"></div>
 
 </div>
 
 <div class="main">
 
-  <div class="header">
+  <div id="topDashboard"></div>
 
-    <div>
-
-      <div class="title">
-        TP Dashboard
-      </div>
-
-      <div class="sub">
-        Instamart Validation Dashboard
-      </div>
-
-    </div>
-
-    <button
-    class="export-btn"
-    onclick="exportCSV()">
-
-      EXPORT CSV
-
-    </button>
-
-  </div>
-
-  <div
-  class="summary-grid"
-  id="summary"></div>
-
-  <div
-  class="po-grid"
-  id="content"></div>
+  <div id="poContent"></div>
 
 </div>
 
 <script>
 
 const API_URL =
-"https://script.google.com/macros/s/AKfycbyk2qqKFw2Hdeiv0JbxH4c5C4I6Z2o4ewJYeMtzqa-XuzYHav6aM_ns5repHRDl8_iy/exec";
+"https://script.google.com/macros/s/AKfycbyObPqBoiSXjsy6_xhe2yXZIWWsCAMEvdtWJslas8rJ9LUsee0K7G36768jIn8tiyno/exec";
 
-let DATA = [];
-
-/* ========================= */
+let GLOBAL_DATA = [];
+let GLOBAL_GROUPED = {};
 
 fetch(API_URL)
-.then(r => r.json())
-.then(d => {
+.then(res => res.json())
+.then(data => {
 
-  DATA = d;
+  GLOBAL_DATA = data;
 
-  renderSummary();
-
-  renderSidebar();
-
-  renderCards(DATA);
+  buildDashboard(data);
 
 });
 
-/* ========================= */
+/* ===================================== */
 
-function getStatus(r){
+function getLineStatus(r){
 
-  if(r.REVIEWED === "YES"){
-    return "REVIEWED";
-  }
-
-  const po =
+  const poPrice =
     Number(r.PO_PRICE || 0);
 
-  const uc =
+  const ucPrice =
     Number(r.UC_PRICE || 0);
 
   const poMRP =
@@ -346,25 +371,31 @@ function getStatus(r){
   const ucGST =
     Number(r.UC_GST || 0);
 
-  const diff =
-    Math.abs(po - uc);
+  const priceDiff =
+    Math.abs(poPrice - ucPrice);
+
+  const mrpMatch =
+    poMRP === ucMRP;
+
+  const gstMatch =
+    poGST === ucGST;
 
   if(
-    diff === 0
+    priceDiff === 0
     &&
-    poMRP === ucMRP
+    mrpMatch
     &&
-    poGST === ucGST
+    gstMatch
   ){
     return "CLEAN";
   }
 
   if(
-    diff <= 1
+    priceDiff <= 1
     &&
-    poMRP === ucMRP
+    mrpMatch
     &&
-    poGST === ucGST
+    gstMatch
   ){
     return "AUTO_APPROVED";
   }
@@ -373,217 +404,381 @@ function getStatus(r){
 
 }
 
-/* ========================= */
+/* ===================================== */
 
-function renderSummary(){
+function buildDashboard(data){
 
-  let clean = 0;
-  let auto = 0;
-  let review = 0;
-  let reviewed = 0;
+  const grouped = {};
 
-  DATA.forEach(r => {
+  data.forEach(r => {
 
-    const s =
-      getStatus(r);
+    const po = r.PoNumber;
 
-    if(s === "CLEAN") clean++;
-    if(s === "AUTO_APPROVED") auto++;
-    if(s === "NEEDS_REVIEW") review++;
-    if(s === "REVIEWED") reviewed++;
+    if(!grouped[po]){
+      grouped[po] = [];
+    }
+
+    grouped[po].push(r);
 
   });
 
-  document
-  .getElementById("summary")
-  .innerHTML = `
+  GLOBAL_GROUPED = grouped;
 
-    <div class="summary-card"
-    onclick="filterCards('ALL')">
+  let cleanPOs = 0;
+  let autoPOs = 0;
+  let reviewPOs = 0;
 
-      <div class="summary-title">
-        TOTAL
+  Object.keys(grouped).forEach(po => {
+
+    const rows = grouped[po];
+
+    let status =
+      getPOStatus(rows);
+
+    if(status === "CLEAN"){
+      cleanPOs++;
+    }
+
+    if(status === "AUTO_APPROVED"){
+      autoPOs++;
+    }
+
+    if(status === "NEEDS_REVIEW"){
+      reviewPOs++;
+    }
+
+  });
+
+  document.getElementById(
+    "topDashboard"
+  ).innerHTML = `
+
+    <div class="top-header">
+
+      <div>
+
+        <div class="page-title">
+          TP Dashboard
+        </div>
+
+        <div class="page-sub">
+          Instamart Validation Dashboard
+        </div>
+
       </div>
 
-      <div class="summary-value">
-        ${DATA.length}
-      </div>
+      <button
+      class="export-btn"
+      onclick="exportAll()">
+
+        EXPORT ALL
+
+      </button>
 
     </div>
 
-    <div class="summary-card"
-    onclick="filterCards('CLEAN')">
+    <div class="summary-grid">
 
-      <div class="summary-title">
-        CLEAN
+      <div class="summary-card"
+      onclick="filterPOs('ALL')">
+
+        <div class="summary-title">
+          TOTAL POs
+        </div>
+
+        <div class="summary-value">
+          ${Object.keys(grouped).length}
+        </div>
+
       </div>
 
-      <div class="summary-value green">
-        ${clean}
+      <div class="summary-card">
+
+        <div class="summary-title">
+          PO LINES
+        </div>
+
+        <div class="summary-value">
+          ${data.length}
+        </div>
+
       </div>
 
-    </div>
+      <div class="summary-card"
+      onclick="filterPOs('CLEAN')">
 
-    <div class="summary-card"
-    onclick="filterCards('AUTO_APPROVED')">
+        <div class="summary-title">
+          CLEAN
+        </div>
 
-      <div class="summary-title">
-        AUTO APPROVED
+        <div class="summary-value green">
+          ${cleanPOs}
+        </div>
+
       </div>
 
-      <div class="summary-value blue">
-        ${auto}
+      <div class="summary-card"
+      onclick="filterPOs('AUTO_APPROVED')">
+
+        <div class="summary-title">
+          AUTO APPROVED
+        </div>
+
+        <div class="summary-value blue">
+          ${autoPOs}
+        </div>
+
       </div>
 
-    </div>
+      <div class="summary-card"
+      onclick="filterPOs('NEEDS_REVIEW')">
 
-    <div class="summary-card"
-    onclick="filterCards('NEEDS_REVIEW')">
+        <div class="summary-title">
+          NEEDS REVIEW
+        </div>
 
-      <div class="summary-title">
-        NEEDS REVIEW
-      </div>
+        <div class="summary-value orange">
+          ${reviewPOs}
+        </div>
 
-      <div class="summary-value orange">
-        ${review}
-      </div>
-
-    </div>
-
-    <div class="summary-card"
-    onclick="filterCards('REVIEWED')">
-
-      <div class="summary-title">
-        REVIEWED
-      </div>
-
-      <div class="summary-value purple">
-        ${reviewed}
       </div>
 
     </div>
 
   `;
 
-}
-
-/* ========================= */
-
-function renderSidebar(){
-
-  const grouped = {};
-
-  DATA.forEach(r => {
-
-    if(!grouped[r.PoNumber]){
-      grouped[r.PoNumber] = [];
-    }
-
-    grouped[r.PoNumber].push(r);
-
-  });
-
-  let html = "";
-
-  Object.keys(grouped)
-  .forEach(po => {
-
-    html += `
-
-      <div
-      class="po-item"
-      onclick="showPO('${po}')">
-
-        <div class="po-title">
-          ${po}
-        </div>
-
-        <div class="po-lines">
-          ${grouped[po].length} lines
-        </div>
-
-      </div>
-
-    `;
-
-  });
-
-  document
-  .getElementById("sidebar")
-  .innerHTML = html;
+  filterPOs("ALL");
 
 }
 
-/* ========================= */
+/* ===================================== */
 
-function showPO(po){
+function getPOStatus(rows){
 
-  const rows =
-    DATA.filter(r =>
-      r.PoNumber === po
-    );
-
-  renderCards(rows);
-
-}
-
-/* ========================= */
-
-function filterCards(type){
-
-  if(type === "ALL"){
-    renderCards(DATA);
-    return;
-  }
-
-  const rows =
-    DATA.filter(r =>
-      getStatus(r) === type
-    );
-
-  renderCards(rows);
-
-}
-
-/* ========================= */
-
-function renderCards(rows){
-
-  let html = "";
+  let hasReview = false;
+  let hasAuto = false;
 
   rows.forEach(r => {
 
     const status =
-      getStatus(r);
+      getLineStatus(r);
 
-    let cls = "review";
-    let label = "🟧 NEEDS REVIEW";
-
-    if(status === "CLEAN"){
-      cls = "clean";
-      label = "✅ CLEAN";
+    if(status === "NEEDS_REVIEW"){
+      hasReview = true;
     }
 
     if(status === "AUTO_APPROVED"){
-      cls = "auto";
-      label = "🟦 AUTO APPROVED";
+      hasAuto = true;
     }
 
-    if(status === "REVIEWED"){
-      cls = "reviewed";
-      label = "🟪 REVIEWED";
+  });
+
+  if(hasReview){
+    return "NEEDS_REVIEW";
+  }
+
+  if(hasAuto){
+    return "AUTO_APPROVED";
+  }
+
+  return "CLEAN";
+
+}
+
+/* ===================================== */
+
+function filterPOs(type){
+
+  document
+    .getElementById("sidebarPOs")
+    .innerHTML = "";
+
+  Object.keys(GLOBAL_GROUPED)
+  .forEach(po => {
+
+    const rows =
+      GLOBAL_GROUPED[po];
+
+    const status =
+      getPOStatus(rows);
+
+    let show = false;
+
+    if(type === "ALL"){
+      show = true;
     }
 
-    html += `
+    if(type === status){
+      show = true;
+    }
 
-      <div class="card">
+    if(show){
 
-        <div class="sku">
+      addSidebarPO(
+        po,
+        rows,
+        status
+      );
+
+    }
+
+  });
+
+}
+
+/* ===================================== */
+
+function addSidebarPO(
+  po,
+  rows,
+  status
+){
+
+  let color = "#22c55e";
+
+  if(status === "AUTO_APPROVED"){
+    color = "#3b82f6";
+  }
+
+  if(status === "NEEDS_REVIEW"){
+    color = "#ff8a00";
+  }
+
+  const div =
+    document.createElement("div");
+
+  div.className = "po-item";
+
+  div.onclick = () => {
+
+    renderPO(po);
+
+  };
+
+  div.innerHTML = `
+
+    <div class="po-title">
+
+      ${po}
+
+      <span class="status-dot"
+      style="background:${color}">
+      </span>
+
+    </div>
+
+    <div class="po-lines">
+      ${rows.length} lines
+    </div>
+
+  `;
+
+  document
+    .getElementById("sidebarPOs")
+    .appendChild(div);
+
+}
+
+/* ===================================== */
+
+function renderPO(po){
+
+  const rows =
+    GLOBAL_GROUPED[po];
+
+  let reviewHTML = "";
+  let autoHTML = "";
+  let cleanHTML = "";
+
+  rows.forEach(r => {
+
+    const poPrice =
+      Number(r.PO_PRICE || 0);
+
+    const ucPrice =
+      Number(r.UC_PRICE || 0);
+
+    const poMRP =
+      Number(r.PO_MRP || 0);
+
+    const ucMRP =
+      Number(r.UC_MRP || 0);
+
+    const poGST =
+      Number(r.PO_GST || 0);
+
+    const ucGST =
+      Number(r.UC_GST || 0);
+
+    const priceDiff =
+      Math.abs(poPrice - ucPrice);
+
+    const mrpMatch =
+      poMRP === ucMRP;
+
+    const gstMatch =
+      poGST === ucGST;
+
+    const finalStatus =
+      getLineStatus(r);
+
+    const finalPrice =
+      priceDiff <= 1
+      ? poPrice
+      : ucPrice;
+
+    const finalMRP =
+      mrpMatch
+      ? poMRP
+      : ucMRP;
+
+    const finalGST =
+      gstMatch
+      ? poGST
+      : ucGST;
+
+    let badge = "";
+
+    if(finalStatus === "CLEAN"){
+
+      badge =
+      `<span class="badge clean-badge">
+        CLEAN
+      </span>`;
+
+    }
+
+    else if(
+      finalStatus ===
+      "AUTO_APPROVED"
+    ){
+
+      badge =
+      `<span class="badge auto-badge">
+        AUTO APPROVED
+      </span>`;
+
+    }
+
+    else{
+
+      badge =
+      `<span class="badge review-badge">
+        NEEDS REVIEW
+      </span>`;
+
+    }
+
+    const card = `
+
+      <div class="item-card">
+
+        <div class="item-title">
           ${r.SKU_ID}
         </div>
 
-        <div class="po">
-          ${r.PoNumber}
+        <div class="item-sub">
+          PO ${po}
         </div>
 
         <table>
@@ -591,24 +786,27 @@ function renderCards(rows){
           <tr>
             <th>PO_PRICE</th>
             <th>UC_PRICE</th>
+            <th>DIFF</th>
           </tr>
 
           <tr>
 
             <td>
-
               <input
               id="po_price_${r.rowNumber}"
-              value="${r.PO_PRICE}">
-
+              class="edit-input"
+              value="${poPrice}">
             </td>
 
             <td>
-
               <input
-              id="uc_price_${r.rowNumber}"
-              value="${r.UC_PRICE}">
+              id="price_${r.rowNumber}"
+              class="edit-input"
+              value="${ucPrice}">
+            </td>
 
+            <td>
+              ₹${priceDiff.toFixed(2)}
             </td>
 
           </tr>
@@ -616,24 +814,33 @@ function renderCards(rows){
           <tr>
             <th>PO_MRP</th>
             <th>UC_MRP</th>
+            <th>STATUS</th>
           </tr>
 
           <tr>
 
             <td>
-
               <input
               id="po_mrp_${r.rowNumber}"
-              value="${r.PO_MRP}">
-
+              class="edit-input"
+              value="${poMRP}">
             </td>
 
             <td>
-
               <input
-              id="uc_mrp_${r.rowNumber}"
-              value="${r.UC_MRP}">
+              id="mrp_${r.rowNumber}"
+              class="edit-input"
+              value="${ucMRP}">
+            </td>
 
+            <td>
+              ${
+                mrpMatch
+                ?
+                "✅ MATCH"
+                :
+                "❌ MISMATCH"
+              }
             </td>
 
           </tr>
@@ -641,34 +848,97 @@ function renderCards(rows){
           <tr>
             <th>PO_GST</th>
             <th>UC_GST</th>
+            <th>STATUS</th>
           </tr>
 
           <tr>
 
             <td>
-
               <input
               id="po_gst_${r.rowNumber}"
-              value="${r.PO_GST}">
-
+              class="edit-input"
+              value="${poGST}">
             </td>
 
             <td>
-
               <input
-              id="uc_gst_${r.rowNumber}"
-              value="${r.UC_GST}">
+              id="gst_${r.rowNumber}"
+              class="edit-input"
+              value="${ucGST}">
+            </td>
 
+            <td>
+              ${
+                gstMatch
+                ?
+                "✅ MATCH"
+                :
+                "❌ MISMATCH"
+              }
             </td>
 
           </tr>
 
         </table>
 
-        <div
-        class="status ${cls}">
+        <div class="final-box">
 
-          ${label}
+          <div class="final-grid">
+
+            <div class="final-item">
+
+              <div class="final-label">
+                FINAL PRICE
+              </div>
+
+              <div class="final-value">
+                ₹${finalPrice}
+              </div>
+
+            </div>
+
+            <div class="final-item">
+
+              <div class="final-label">
+                FINAL MRP
+              </div>
+
+              <div class="final-value">
+                ₹${finalMRP}
+              </div>
+
+            </div>
+
+            <div class="final-item">
+
+              <div class="final-label">
+                FINAL GST
+              </div>
+
+              <div class="final-value">
+                ${finalGST}%
+              </div>
+
+            </div>
+
+          </div>
+
+          <div class="final-status">
+
+            ${
+              finalStatus === "CLEAN"
+              ?
+              "✅ CLEAN"
+              :
+              finalStatus ===
+              "AUTO_APPROVED"
+              ?
+              "🟦 AUTO APPROVED"
+              :
+              "🟧 NEEDS REVIEW"
+            }
+
+          </div>
 
         </div>
 
@@ -680,171 +950,329 @@ function renderCards(rows){
 
         </button>
 
+        <br>
+
+        ${badge}
+
       </div>
 
     `;
 
+    if(finalStatus === "CLEAN"){
+      cleanHTML += card;
+    }
+
+    if(
+      finalStatus ===
+      "AUTO_APPROVED"
+    ){
+      autoHTML += card;
+    }
+
+    if(
+      finalStatus ===
+      "NEEDS_REVIEW"
+    ){
+      reviewHTML += card;
+    }
+
   });
 
-  document
-  .getElementById("content")
-  .innerHTML = html;
+  document.getElementById(
+    "poContent"
+  ).innerHTML = `
+
+    <div class="section">
+
+      <div class="section-header">
+
+        <div class="section-title">
+          ${po}
+        </div>
+
+        <button
+        class="export-btn"
+        onclick="exportPO('${po}')">
+
+          EXPORT PO
+
+        </button>
+
+      </div>
+
+    </div>
+
+    <div class="section">
+
+      <div class="section-title">
+        Needs Review
+      </div>
+
+      <div class="po-grid">
+
+        ${
+          reviewHTML
+          ||
+          '<div class="empty">No review lines</div>'
+        }
+
+      </div>
+
+    </div>
+
+    <div class="section">
+
+      <div class="section-title">
+        Auto Approved
+      </div>
+
+      <div class="po-grid">
+
+        ${
+          autoHTML
+          ||
+          '<div class="empty">No auto approved lines</div>'
+        }
+
+      </div>
+
+    </div>
+
+    <div class="section">
+
+      <div class="section-title">
+        Clean
+      </div>
+
+      <div class="po-grid">
+
+        ${
+          cleanHTML
+          ||
+          '<div class="empty">No clean lines</div>'
+        }
+
+      </div>
+
+    </div>
+
+  `;
 
 }
 
-/* ========================= */
+/* ===================================== */
 
 async function saveEdit(rowNumber){
 
-  const payload = {
+  const PO_PRICE =
+    document.getElementById(
+      `po_price_${rowNumber}`
+    ).value;
 
-    rowNumber,
+  const PO_MRP =
+    document.getElementById(
+      `po_mrp_${rowNumber}`
+    ).value;
 
-    PO_PRICE:
-      document.getElementById(
-        `po_price_${rowNumber}`
-      ).value,
+  const PO_GST =
+    document.getElementById(
+      `po_gst_${rowNumber}`
+    ).value;
 
-    PO_MRP:
-      document.getElementById(
-        `po_mrp_${rowNumber}`
-      ).value,
+  const UC_PRICE =
+    document.getElementById(
+      `price_${rowNumber}`
+    ).value;
 
-    PO_GST:
-      document.getElementById(
-        `po_gst_${rowNumber}`
-      ).value,
+  const UC_GST =
+    document.getElementById(
+      `gst_${rowNumber}`
+    ).value;
 
-    UC_PRICE:
-      document.getElementById(
-        `uc_price_${rowNumber}`
-      ).value,
+  const UC_MRP =
+    document.getElementById(
+      `mrp_${rowNumber}`
+    ).value;
 
-    UC_MRP:
-      document.getElementById(
-        `uc_mrp_${rowNumber}`
-      ).value,
+  await fetch(API_URL, {
 
-    UC_GST:
-      document.getElementById(
-        `uc_gst_${rowNumber}`
-      ).value,
+    method:"POST",
 
-    REVIEWED:"YES"
+    body: JSON.stringify({
 
-  };
+      rowNumber,
 
-  try{
+      PO_PRICE,
+      PO_MRP,
+      PO_GST,
 
-    await fetch(API_URL, {
+      UC_PRICE,
+      UC_GST,
+      UC_MRP
 
-      method:"POST",
+    })
 
-      mode:"no-cors",
+  });
 
-      headers:{
-        "Content-Type":"application/json"
-      },
+  alert("Updated Successfully");
 
-      body: JSON.stringify(payload)
-
-    });
-
-    alert(
-      "Saved Successfully"
-    );
-
-    setTimeout(() => {
-
-      location.reload();
-
-    },1200);
-
-  }catch(err){
-
-    console.log(err);
-
-    alert(
-      "Save Failed"
-    );
-
-  }
+  location.reload();
 
 }
 
-/* ========================= */
+/* ===================================== */
 
-function exportCSV(){
+function exportPO(po){
 
-  let csv = [];
+  exportCSV(
+    GLOBAL_GROUPED[po],
+    po + ".csv"
+  );
 
-  csv.push([
+}
+
+function exportAll(){
+
+  exportCSV(
+    GLOBAL_DATA,
+    "ALL_POS.csv"
+  );
+
+}
+
+function exportCSV(rows, filename){
+
+  let csvRows = [];
+
+  csvRows.push([
 
     "PoNumber",
     "SKU_ID",
 
     "PO_PRICE",
     "UC_PRICE",
+    "FINAL_PRICE",
 
     "PO_MRP",
     "UC_MRP",
+    "FINAL_MRP",
 
     "PO_GST",
     "UC_GST",
+    "FINAL_GST",
 
-    "STATUS"
+    "FINAL_STATUS"
 
   ]);
 
-  DATA.forEach(r => {
+  rows.forEach(r => {
 
-    csv.push([
+    const poPrice =
+      Number(r.PO_PRICE || 0);
+
+    const ucPrice =
+      Number(r.UC_PRICE || 0);
+
+    const poMRP =
+      Number(r.PO_MRP || 0);
+
+    const ucMRP =
+      Number(r.UC_MRP || 0);
+
+    const poGST =
+      Number(r.PO_GST || 0);
+
+    const ucGST =
+      Number(r.UC_GST || 0);
+
+    const priceDiff =
+      Math.abs(poPrice - ucPrice);
+
+    const finalPrice =
+      priceDiff <= 1
+      ? poPrice
+      : ucPrice;
+
+    const finalMRP =
+      poMRP === ucMRP
+      ? poMRP
+      : ucMRP;
+
+    const finalGST =
+      poGST === ucGST
+      ? poGST
+      : ucGST;
+
+    const finalStatus =
+      getLineStatus(r);
+
+    csvRows.push([
 
       r.PoNumber,
       r.SKU_ID,
 
-      r.PO_PRICE,
-      r.UC_PRICE,
+      poPrice,
+      ucPrice,
+      finalPrice,
 
-      r.PO_MRP,
-      r.UC_MRP,
+      poMRP,
+      ucMRP,
+      finalMRP,
 
-      r.PO_GST,
-      r.UC_GST,
+      poGST,
+      ucGST,
+      finalGST,
 
-      getStatus(r)
+      finalStatus
 
     ]);
 
   });
 
-  const csvContent =
-    csv.map(e =>
-      e.join(",")
-    ).join("\n");
+  let csvContent =
+    csvRows
+    .map(row =>
+      row.join(",")
+    )
+    .join("\n");
 
   const blob =
     new Blob(
       [csvContent],
       {
-        type:"text/csv"
+        type:
+        "text/csv;charset=utf-8;"
       }
     );
 
-  const a =
+  const link =
     document.createElement("a");
 
-  a.href =
+  const url =
     URL.createObjectURL(blob);
 
-  a.download =
-    "TP_Dashboard.csv";
+  link.setAttribute(
+    "href",
+    url
+  );
 
-  a.click();
+  link.setAttribute(
+    "download",
+    filename
+  );
+
+  document.body
+    .appendChild(link);
+
+  link.click();
+
+  document.body
+    .removeChild(link);
 
 }
 
 </script>
 
 </body>
+
 </html>
